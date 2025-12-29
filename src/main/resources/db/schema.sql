@@ -97,7 +97,6 @@ CREATE TABLE IF NOT EXISTS document_types (
 CREATE TABLE IF NOT EXISTS student_documents (
                                                  document_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                  student_id INTEGER NOT NULL,
-                                                 enrollment_id INTEGER,
 
                                                  document_type_id INTEGER NOT NULL,
 
@@ -115,9 +114,6 @@ CREATE TABLE IF NOT EXISTS student_documents (
                                                      REFERENCES students(student_id)
                                                      ON DELETE CASCADE,
 
-                                                 FOREIGN KEY (enrollment_id)
-                                                     REFERENCES enrollment(enrollment_id)
-                                                     ON DELETE SET NULL,
 
                                                  FOREIGN KEY (document_type_id)
                                                      REFERENCES document_types(document_type_id)
@@ -180,7 +176,7 @@ GROUP BY s.student_id;
 
 CREATE VIEW IF NOT EXISTS enrollment_stats AS
 SELECT
-    strftime('%Y-%m', enrollment_date) AS month,
+    strftime('%Y-%m', enrollment_timestamp) AS month,
     COUNT(*) AS enrolled_students
 FROM students
 GROUP BY month;

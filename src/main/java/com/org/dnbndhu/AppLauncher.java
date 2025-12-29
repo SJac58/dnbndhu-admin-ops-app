@@ -7,7 +7,7 @@ public class AppLauncher {
 
     public static void main(String[] args) {
 
-        SchemaInitializer.init();
+        //SchemaInitializer.init();
 
         Student student = new Student();
         student.setFullName("Test Student");
