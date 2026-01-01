@@ -27,7 +27,7 @@ public class StudentRepository {
 
             ps.executeUpdate();
 
-            System.out.println("✔ Student saved with enrollment timestamp");
+            System.out.println("✔ Student saved");
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to save student", e);
