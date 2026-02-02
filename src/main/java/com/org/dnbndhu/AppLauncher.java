@@ -1,22 +1,29 @@
 package com.org.dnbndhu;
 import com.org.dnbndhu.infrastructure.db.SchemaInitializer;
 import com.org.dnbndhu.domain.model.Student;
-import com.org.dnbndhu.repository.StudentRepository;
+import com.org.dnbndhu.application.EnrollmentWorkflow;
+import com.org.dnbndhu.service.enrollment.DocumentPrecheckResult;
+import com.org.dnbndhu.service.enrollment.DocumentProcessingService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppLauncher {
 
     public static void main(String[] args) {
 
-        //SchemaInitializer.init();
+       // SchemaInitializer.init();
 
-        Student student = new Student();
-        student.setFullName("Test Student");
-        student.setPhone("9999999999");
-        student.setGender("M");
-        student.setBatchId(1);
+        DocumentProcessingService service = new DocumentProcessingService();
 
-        new StudentRepository().save(student);
+        DocumentPrecheckResult result =
+                service.precheckDocument("C:/Users/saraj/Downloads/sample.jpg");
 
-        System.out.println("Test insert done.");
+        if (!result.isPassed()) {
+            System.out.println("Upload different document");
+        } else {
+            System.out.println("OCR Text: " + result.getExtractedText());
+        }
+
     }
 }
