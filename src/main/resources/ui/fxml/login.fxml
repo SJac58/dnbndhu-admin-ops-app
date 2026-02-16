@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.Circle?>
+
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.org.dnbndhu.ui.controller.LoginController"
+           styleClass="root">
+
+    <!-- Background gradient layer -->
+    <Pane fx:id="backgroundPane" styleClass="background"/>
+
+
+    <!-- Center content -->
+    <VBox alignment="CENTER"
+          spacing="18"
+          styleClass="login-container"
+          fillWidth="false">
+
+        <Label text="Welcome Geeta!" styleClass="title"/>
+        <Label text="Please enter your PIN to continue" styleClass="subtitle"/>
+
+        <!-- Logo circle -->
+
+
+       <StackPane styleClass="logo-container">
+    <ImageView fx:id="logoImage"
+               fitWidth="140"
+               fitHeight="140"
+               preserveRatio="true">
+        <clip>
+            <Circle radius="70"/>
+        </clip>
+        <image>
+            <Image url="@/images/dheenabandhu_logo.png"/>
+        </image>
+    </ImageView>
+    
+    </StackPane>
+
+
+        <PasswordField promptText="Enter PIN"
+                       fx:id="pinField"
+                       styleClass="pin-field"/>
+
+        <Button text="Enter"
+                styleClass="enter-button"
+                onAction="#handleLogin"/>
+
+    </VBox>
+
+</StackPane>

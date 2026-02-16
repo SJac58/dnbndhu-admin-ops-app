@@ -1,0 +1,64 @@
+.main-container {
+  -fx-background-color: #f7f6ff;
+}
+
+.portal-root {
+  -fx-background-color: transparent;
+}
+
+.page-title {
+  -fx-font-size: 22px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #111827;
+}
+
+.portal-card {
+  -fx-background-color: white;
+  -fx-background-radius: 18;
+  -fx-padding: 15;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 8, 0, 0, 4);
+}
+
+.card-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #374151;
+}
+
+.list-view {
+  -fx-background-radius: 12;
+  -fx-border-color: #e5e7eb;
+  -fx-border-radius: 12;
+}
+
+.text-field {
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-border-color: #e5e7eb;
+}
+
+.send-btn {
+  -fx-background-color: #8b5cf6;
+  -fx-text-fill: white;
+  -fx-background-radius: 10;
+  -fx-font-weight: bold;
+}
+
+.send-btn:hover {
+  -fx-background-color: #7c3aed;
+}
+
+.pill {
+  -fx-background-color: #ede9fe;
+  -fx-text-fill: #7c3aed;
+  -fx-padding: 3 10;
+  -fx-background-radius: 20;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+}
+
+.list-view .list-cell:selected {
+  -fx-background-color: #ede9fe;
+  -fx-text-fill: #5b21b6;
+  -fx-font-weight: bold;
+}

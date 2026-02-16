@@ -1,0 +1,186 @@
+/* ==================================================
+   ROOT / BACKGROUND
+================================================== */
+.main-container {
+  -fx-background-color: linear-gradient(to bottom right, #f3f0ff, #e9e2ff);
+}
+
+/* ==================================================
+   SIDEBAR
+================================================== */
+.sidebar {
+  -fx-background-color: #f9fafb;
+  -fx-border-color: #e5e7eb;
+  -fx-border-width: 0 1 0 0;
+}
+
+/* App name */
+.logo {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #000000; /* BLACK */
+}
+
+/* Section titles (MANAGEMENT, REPORTS) */
+.menu-section-title {
+  -fx-text-fill: #000000; /* BLACK */
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-opacity: 0.7;
+  -fx-padding: 20 15 8 15;
+}
+
+/* Sidebar items */
+.menu-item {
+  -fx-background-color: transparent;
+  -fx-text-fill: #000000; /* BLACK */
+  -fx-padding: 12 15;
+  -fx-background-radius: 12;
+  -fx-font-size: 13px;
+}
+
+/* Hover effect */
+.menu-item:hover {
+  -fx-background-color: #ede9fe;
+}
+
+/* Active Dashboard option */
+.menu-item.active {
+  -fx-background-color: linear-gradient(to right, #6d28d9, #7c3aed);
+  -fx-text-fill: #000000; /* BLACK text */
+  -fx-font-weight: bold;
+}
+
+/* ==================================================
+   HEADER
+================================================== */
+.header-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #000000; /* BLACK */
+}
+
+.icon-button {
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-padding: 8;
+  -fx-text-fill: #000000;
+}
+
+/* ==================================================
+   HERO SECTION
+================================================== */
+.hero-circle {
+  -fx-fill: rgba(255, 255, 255, 0.6);
+  -fx-stroke: #6d28d9;
+  -fx-stroke-width: 8;
+}
+
+.hero-count {
+  -fx-font-size: 54px;
+  -fx-font-weight: 900;
+  -fx-text-fill: #6d28d9;
+}
+
+.hero-subtext {
+  -fx-background-color: #ede9fe;
+  -fx-padding: 3 12;
+  -fx-background-radius: 20;
+  -fx-text-fill: #000000; /* BLACK */
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+}
+
+/* ==================================================
+   CARDS
+================================================== */
+.card {
+  -fx-background-color: #ffffff;
+  -fx-background-radius: 25;
+  -fx-padding: 25;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 20, 0, 0, 8);
+}
+
+.card-title {
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #000000; /* BLACK */
+}
+
+/* ==================================================
+   PIE CHART
+================================================== */
+.default-color0.chart-pie {
+  -fx-pie-color: #6d28d9;
+}
+.default-color1.chart-pie {
+  -fx-pie-color: #7c3aed;
+}
+.default-color2.chart-pie {
+  -fx-pie-color: #a78bfa;
+}
+
+.chart-pie-label {
+  -fx-fill: #000000; /* BLACK */
+  -fx-font-size: 11px;
+}
+
+/* ==================================================
+   BAR CHART
+================================================== */
+.default-color0.chart-bar {
+  -fx-bar-fill: #9d174d;
+}
+.default-color1.chart-bar {
+  -fx-bar-fill: #be185d;
+}
+.default-color2.chart-bar {
+  -fx-bar-fill: #db2777;
+}
+
+/* ==================================================
+   LINE CHART
+================================================== */
+.default-color0.chart-series-line {
+  -fx-stroke: #6d28d9;
+  -fx-stroke-width: 3px;
+}
+
+.default-color0.chart-line-symbol {
+  -fx-background-color: #6d28d9, white;
+}
+
+/* ==================================================
+   PROGRESS BARS
+================================================== */
+.progress-bar > .bar {
+  -fx-background-color: #facc15;
+  -fx-background-radius: 8;
+}
+
+.progress-bar > .track {
+  -fx-background-color: #e5e7eb;
+  -fx-background-radius: 8;
+}
+
+/* ==================================================
+   SCROLLPANE
+================================================== */
+.content-scroll {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+/* ==================================================
+   FORCE ALL TEXT TO BLACK (FINAL SAFETY)
+================================================== */
+.label {
+  -fx-text-fill: #000000;
+}
+
+.button {
+  -fx-text-fill: #000000;
+}

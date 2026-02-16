@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.ViewMyStudentsController"
+            styleClass="main-container">
+
+    <!-- Sidebar -->
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <!-- CENTER CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" pannable="true">
+            <VBox spacing="25" styleClass="page-root">
+                <padding>
+                    <Insets top="25" right="40" bottom="25" left="40"/>
+                </padding>
+
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="10">
+    <Label text="Student Overview"
+           style="-fx-font-weight: bold; -fx-font-size: 24px;"/>
+
+    <TextField fx:id="searchField"
+               promptText="Search student name..."
+               prefWidth="260"/>
+</VBox>
+
+<Region HBox.hgrow="ALWAYS"/>
+
+<HBox spacing="8" styleClass="toggle-pill">
+    <ToggleButton fx:id="punkToggle"
+                  text="PUNK"
+                  styleClass="tab-btn"
+                  selected="true"/>
+
+    <ToggleButton fx:id="thaToggle"
+                  text="THA"
+                  styleClass="tab-btn"/>
+</HBox>
+
+
+ 
+<Region prefWidth="80"/>
+
+                    
+                                   </HBox>
+
+                <!-- Card -->
+                <VBox styleClass="card">
+
+                    <!-- Table Header -->
+                    <GridPane fx:id="headerGrid" styleClass="table-header" hgap="20">
+   <padding>
+    <Insets top="0" right="0" bottom="15" left="0"/>
+</padding>
+ <columnConstraints>
+        <ColumnConstraints prefWidth="280"/>
+        <ColumnConstraints prefWidth="260"/>
+        <ColumnConstraints prefWidth="180"/>
+    </columnConstraints>
+
+    <Label text="STUDENTS" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label text="ATTENDANCE" GridPane.columnIndex="1" style="-fx-font-weight: bold;"/>
+    <Label text="DOCUMENTS UPLOADED" GridPane.columnIndex="2" style="-fx-font-weight: bold;"/>
+</GridPane>
+
+
+                    <!-- Rows -->
+                    <VBox spacing="12" fx:id="rowsBox"/>
+
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

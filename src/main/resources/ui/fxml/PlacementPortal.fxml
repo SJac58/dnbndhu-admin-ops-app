@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.PlacementPortalController"
+            styleClass="main-container">
+
+    <!-- Sidebar -->
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="20" styleClass="portal-root">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Placement Portal" styleClass="page-title"/>             
+            </HBox>
+
+            <!-- 3 Column Layout -->
+            <HBox spacing="20">
+
+                <!-- Messages -->
+<VBox spacing="10" styleClass="portal-card" prefWidth="350">
+    <Label text="Messages (Mail Log)" styleClass="card-title"/>
+
+    <ListView fx:id="messagesList" VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="messageField"
+                   promptText="Message to selected students..."
+                   HBox.hgrow="ALWAYS"/>
+        <Button text="➤"
+                styleClass="send-btn"
+                onAction="#sendMail"/>
+    </HBox>
+</VBox>
+
+
+                <!-- Students -->
+            <VBox spacing="10" styleClass="portal-card" prefWidth="300">
+    <HBox>
+        <Label text="Students" styleClass="card-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="studentCountLabel" styleClass="pill"/>
+    </HBox>
+
+    <TextField fx:id="studentSearchField"
+               promptText="Search students..."/>
+
+    <ListView fx:id="studentsList"
+              VBox.vgrow="ALWAYS"/>
+</VBox>
+
+
+                <!-- Companies -->
+              <VBox spacing="10" styleClass="portal-card" prefWidth="300">
+    <Label text="Retail Companies" styleClass="card-title"/>
+
+    <TextField fx:id="companySearchField"
+               promptText="Search companies..."/>
+
+    <ListView fx:id="companiesList"
+              VBox.vgrow="ALWAYS"/>
+</VBox>
+
+
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

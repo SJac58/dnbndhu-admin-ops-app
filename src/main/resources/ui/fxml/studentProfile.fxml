@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.StudentProfileController"
+            styleClass="main-container">
+
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <center>
+        <ScrollPane fx:id="profileScroll" fitToWidth="true">
+            <VBox spacing="24" styleClass="page-root">
+                <padding>
+                    <Insets top="25" right="40" bottom="25" left="40"/>
+                </padding>
+
+                <!-- ===== HEADER ===== -->
+<HBox spacing="20" alignment="TOP_LEFT">
+
+    <!-- PHOTO PLACEHOLDER -->
+    <StackPane fx:id="photoBox"
+               prefWidth="140"
+               prefHeight="160"
+               styleClass="photo-box">
+
+        <Label text="No Photo"
+               styleClass="photo-placeholder-text"/>
+    </StackPane>
+
+    <!-- BASIC INFO -->
+    <VBox spacing="6">
+
+        <Label fx:id="nameLabel"
+               styleClass="profile-name"/>
+
+        <Label fx:id="ageGenderLabel"
+               styleClass="profile-sub"/>
+
+        <HBox spacing="10">
+            <Label fx:id="batchLabel"
+                   styleClass="pill"/>
+
+            <Label fx:id="candidateIdLabel"
+                   styleClass="pill"/>
+        </HBox>
+
+    </VBox>
+
+</HBox>
+
+
+                <!-- ===== BASIC DETAILS ===== -->
+                <VBox styleClass="card">
+                    <Label text="Basic Details" styleClass="section-title"/>
+
+                    <GridPane hgap="20" vgap="10">
+                        <Label text="Batch ID:"/>
+                        <Label fx:id="batchIdLabel" GridPane.columnIndex="1"/>
+
+                        <Label text="Email:" GridPane.rowIndex="1"/>
+                        <Label fx:id="emailLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Phone:" GridPane.rowIndex="2"/>
+                        <Label fx:id="phoneLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- ===== ADDRESS ===== -->
+                <VBox styleClass="card">
+                    <Label text="Address" styleClass="section-title"/>
+                    <Label fx:id="addressLabel" wrapText="true"/>
+                </VBox>
+
+                <!-- ===== ATTENDANCE ===== -->
+                <VBox styleClass="card">
+                    <Label text="Attendance Overview" styleClass="section-title"/>
+
+                    <ProgressBar fx:id="attendanceBar" prefWidth="300"/>
+                    <Label fx:id="attendanceText" styleClass="muted-text"/>
+                </VBox>
+
+<!-- ===== DOCUMENTS ===== -->
+
+
+<VBox fx:id="documentsSection"
+      styleClass="card">
+    <Label text="Documents" styleClass="section-title"/>
+
+    <VBox spacing="8">
+        <Button text="View Aadhar"/>
+        <Button text="View PAN"/>
+        <Button text="View Bank Passbook"/>
+    </VBox>
+</VBox>
+
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.EnrollNewStudentController"
+            fx:id="rootPane"
+            styleClass="main-container">
+
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <VBox spacing="25" styleClass="enroll-root">
+                <padding>
+                    <Insets top="30" right="40" bottom="30" left="40"/>
+                </padding>
+
+                <!-- ================= HEADER ================= -->
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Enrollment form" styleClass="page-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+
+
+                    <Label text="Academic Year: 2023-24" styleClass="pill"/>
+                </HBox>
+
+                <!-- ================= CARD ================= -->
+                <VBox styleClass="form-card" spacing="20">
+
+                    <Label text="DEENABANDHU" styleClass="form-title"/>
+                    <Label text="SKILL DEVELOPMENT CENTRE" styleClass="form-subtitle"/>
+                    <HBox styleClass="form-banner"
+      alignment="CENTER_LEFT"
+      spacing="10">
+
+    <Label text="APPLICATION FORM"/>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <DatePicker fx:id="applicationDatePicker"
+                promptText="Date"
+                styleClass="banner-date-picker"/>
+</HBox>
+
+
+                    <!-- ================= SECTION 1 ================= -->
+                    <Label text="1  PERSONAL DETAILS" styleClass="section-title"/>
+
+                    <GridPane hgap="15" vgap="15">
+
+                        <TextField fx:id="nameField" promptText="Name" GridPane.columnSpan="3"/>
+
+                        <VBox fx:id="photoBox"
+                              GridPane.columnIndex="3"
+                              GridPane.rowSpan="4"
+                              styleClass="upload-box">
+                            <Label text="Upload Photo"/>
+                        </VBox>
+
+                        <TextField fx:id="disabilityTypeField" promptText="Type of Disability" GridPane.rowIndex="1"/>
+                        <TextField fx:id="disabilityPercentField" promptText="Disability %" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <TextField fx:id="ageField" promptText="Age" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+
+                        <!-- DOB -->
+                        <HBox fx:id="dobBox" spacing="10"
+                              GridPane.rowIndex="2"
+                              GridPane.columnSpan="3"> <!-- ADDED -->
+                            <TextField promptText="DD"/>
+                            <TextField promptText="MM"/>
+                            <TextField promptText="YYYY"/>
+                        </HBox>
+
+                       <!-- Gender -->
+<VBox spacing="8"
+      GridPane.rowIndex="3"
+      GridPane.columnSpan="3">
+
+    <HBox fx:id="genderBox" spacing="10">
+        <Label text="Gender:"/>
+        <RadioButton fx:id="maleRadio" text="Male"/>
+        <RadioButton fx:id="femaleRadio" text="Female"/>
+    </HBox>
+
+    <!-- Marital Status -->
+    <HBox fx:id="maritalStatusBox" spacing="10">
+        <Label text="Marital Status:"/>
+        <RadioButton fx:id="marriedRadio" text="Married"/>
+        <RadioButton fx:id="unmarriedRadio" text="Unmarried"/>
+        <RadioButton fx:id="divorcedRadio" text="Divorced"/>
+    </HBox>
+
+</VBox>
+
+
+                        <TextArea fx:id="addressField"
+                                  promptText="Full Address"
+                                  GridPane.rowIndex="4"
+                                  GridPane.columnSpan="4"/>
+
+                        <!-- Everything below address -->
+                        <VBox fx:id="remainingFieldsBox"
+                              spacing="15"
+                              GridPane.rowIndex="5"
+                              GridPane.columnSpan="4"> <!-- ADDED -->
+
+                            <GridPane hgap="15" vgap="15">
+                                <TextField promptText="District"/>
+                                <TextField promptText="Taluk" GridPane.columnIndex="1"/>
+                                <TextField promptText="Village" GridPane.columnIndex="2"/>
+                                <TextField promptText="PIN" GridPane.columnIndex="3"/>
+
+                                <TextField promptText="Aadhar No" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
+                                <TextField promptText="PAN Card No" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+
+                                <TextField promptText="Religion" GridPane.rowIndex="2"/>
+                                <TextField promptText="Caste" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                <TextField promptText="Sub Caste" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+
+                                <TextField promptText="Email" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
+                                <TextField promptText="Cell No" GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+                            </GridPane>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- ================= SECTION 2 ================= -->
+                  <VBox spacing="10" styleClass="form-section">
+    <Label text="2  QUALIFICATION DETAILS" styleClass="section-title"/>
+
+    <StackPane alignment="TOP_LEFT">
+    <GridPane fx:id="qualificationTable"
+              hgap="1"
+              vgap="1"
+              styleClass="data-table"/>
+</StackPane>
+
+
+    <!-- ➕ Add Row button -->
+    <HBox alignment="CENTER">
+    <padding>
+        <Insets left="-20"/>
+    </padding>
+        <Button text="＋"
+                styleClass="table-add-btn"
+                onAction="#addQualificationRow"/>
+    </HBox>
+</VBox>
+
+
+                    <!-- ================= SECTION 3 ================= -->
+               <VBox spacing="10" styleClass="form-section">
+    <Label text="3  FAMILY DETAILS" styleClass="section-title"/>
+
+    <GridPane fx:id="familyTable"
+              hgap="1"
+              vgap="1"
+              styleClass="data-table"/>
+
+    <!-- ➕ Add Row button -->
+    <HBox alignment="CENTER">
+        <Button text="＋"
+                styleClass="table-add-btn"
+                onAction="#addFamilyRow"/>
+    </HBox>
+</VBox>
+
+
+                  <!-- ================= DECLARATIONS ================= -->
+<HBox spacing="20">
+
+    <!-- ===== CANDIDATE DECLARATION ===== -->
+    <VBox spacing="12" styleClass="form-section" HBox.hgrow="ALWAYS">
+
+        <Label text="4  CANDIDATE DECLARATION" styleClass="section-title"/>
+
+        <TextArea
+                text="I hereby declare that the above-furnished information is true to the best of my knowledge and belief. I agree to respect the rules and regulations of the organisation/training centre and abide by them during the training period."
+                wrapText="true"
+                editable="false"
+                prefHeight="120"/>
+
+        <!-- Name Upload -->
+        <VBox spacing="4">
+            <Label text="Name" styleClass="signature-label"/>
+            <StackPane fx:id="candidateNameBox" styleClass="signature-box">
+                <Label text="Click to upload name image"/>
+            </StackPane>
+        </VBox>
+
+        <!-- Signature Upload -->
+        <VBox spacing="4">
+            <Label text="Signature of the Candidate" styleClass="signature-label"/>
+            <StackPane fx:id="candidateSignBox" styleClass="signature-box">
+                <Label text="Click to upload signature"/>
+            </StackPane>
+        </VBox>
+
+    </VBox>
+
+    <!-- ===== GUARDIAN DECLARATION ===== -->
+    <VBox spacing="12" styleClass="form-section" HBox.hgrow="ALWAYS">
+
+        <Label text="5  GUARDIAN DECLARATION" styleClass="section-title"/>
+
+        <TextArea
+                text="We, the parents/guardians, have understood the rules and regulations of the organisation/training centre and agree to abide by them."
+                wrapText="true"
+                editable="false"
+                prefHeight="120"/>
+
+        <!-- Name Upload -->
+        <VBox spacing="4">
+            <Label text="Name" styleClass="signature-label"/>
+            <StackPane fx:id="guardianNameBox" styleClass="signature-box">
+                <Label text="Click to upload name image"/>
+            </StackPane>
+        </VBox>
+
+        <!-- Signature Upload -->
+        <VBox spacing="4">
+            <Label text="Guardian Signature" styleClass="signature-label"/>
+            <StackPane fx:id="guardianSignBox" styleClass="signature-box">
+                <Label text="Click to upload signature"/>
+            </StackPane>
+        </VBox>
+
+    </VBox>
+
+</HBox>
+
+
+                  <!-- ================= OFFICIAL ================= -->
+<VBox spacing="16" styleClass="form-section light-bg">
+
+    <Label text="FOR OFFICIAL USE ONLY" styleClass="section-title"/>
+
+    <!-- Row 1 -->
+    <GridPane hgap="20" vgap="6">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="33"/>
+            <ColumnConstraints percentWidth="33"/>
+            <ColumnConstraints percentWidth="34"/>
+        </columnConstraints>
+
+<TextField promptText="Project Name" GridPane.columnIndex="0"/>
+<TextField promptText="Batch No" GridPane.columnIndex="1"/>
+<TextField promptText="Batch ID" GridPane.columnIndex="2"/>
+    </GridPane>
+
+    <!-- Row 2 -->
+    <GridPane hgap="20" vgap="6">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="33"/>
+            <ColumnConstraints percentWidth="33"/>
+            <ColumnConstraints percentWidth="34"/>
+        </columnConstraints>
+
+        <!-- Start Date -->
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="Start Date:"/>
+            <DatePicker fx:id="startDatePicker"/>
+        </HBox>
+
+        <!-- End Date -->
+        <HBox spacing="6" alignment="CENTER_LEFT" GridPane.columnIndex="1">
+            <Label text="End Date:"/>
+            <DatePicker fx:id="endDatePicker"/>
+        </HBox>
+
+        <!-- Candidate ID -->
+        <VBox spacing="4" GridPane.columnIndex="2">
+            <TextField promptText="Candidate ID"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Comments -->
+    <VBox spacing="6">
+        <Label text="COMMENTS"/>
+        <TextArea prefHeight="90"/>
+    </VBox>
+
+</VBox>
+
+
+                    <!-- ================= CHECKLIST ================= -->
+                    <VBox spacing="10" styleClass="form-section">
+                        <Label text="Checklist" styleClass="section-title"/>
+                        <FlowPane fx:id="checklistPane" hgap="20" vgap="10"> <!-- ADDED -->
+                            <CheckBox text="Photo"/>
+                            <CheckBox text="Aadhar"/>
+                            <CheckBox text="Medical"/>
+                            <CheckBox text="Education"/>
+                            <CheckBox text="PAN"/>
+                            <CheckBox text="UID"/>
+                            <CheckBox text="Bank Passbook"/>
+                        </FlowPane>
+                    </VBox>
+
+                    <!-- ================= ACTIONS ================= -->
+                    <HBox alignment="CENTER_RIGHT" spacing="15">
+                        <Button text="Cancel" styleClass="ghost-btn" onAction="#onCancel"/>
+                        <Button text="Submit Enrollment" styleClass="primary-btn" onAction="#onSubmit"/>
+                    </HBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

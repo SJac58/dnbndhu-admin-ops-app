@@ -1,0 +1,96 @@
+.attendance-root {
+  -fx-background-color: #f3f1fb;
+}
+
+.page-title {
+  -fx-font-size: 22px;
+  -fx-font-weight: 800;
+}
+
+.date-pill {
+  -fx-background-color: white;
+  -fx-padding: 6 12;
+  -fx-background-radius: 10;
+  -fx-text-fill: #6b7280;
+  -fx-font-size: 11px;
+}
+
+.search-box {
+  -fx-pref-width: 280;
+  -fx-background-radius: 10;
+  -fx-padding: 8 12;
+}
+
+.tab-btn {
+  -fx-background-radius: 12;
+  -fx-padding: 6 18;
+  -fx-background-color: #ede9fe; /* light lavender */
+  -fx-text-fill: #7c3aed;
+  -fx-font-weight: 600;
+}
+
+.tab-btn:selected {
+  -fx-background-color: #8b5cf6; /* Figma purple */
+  -fx-text-fill: white;
+}
+
+.primary-btn {
+  -fx-background-color: #8b5cf6; /* purple initially */
+  -fx-text-fill: white;
+  -fx-background-radius: 14;
+  -fx-padding: 8 18;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+}
+/* Hover: brighter + noticeable */
+.primary-btn:hover {
+  -fx-background-color: #7c3aed;
+}
+
+/* Clicked */
+.primary-btn:pressed {
+  -fx-background-color: #6d28d9;
+}
+
+.ghost-btn {
+  -fx-background-color: #8b5cf6; /* PURPLE INITIALLY */
+  -fx-text-fill: white;
+  -fx-background-radius: 14;
+  -fx-padding: 8 18;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+}
+
+/* Hover */
+.ghost-btn:hover {
+  -fx-background-color: #7c3aed;
+}
+
+/* Click */
+.ghost-btn:pressed {
+  -fx-background-color: #6d28d9;
+}
+
+.card {
+  -fx-background-color: white;
+  -fx-background-radius: 18;
+  -fx-padding: 20;
+  -fx-spacing: 12;
+}
+
+.table-header {
+  -fx-padding: 8 0;
+  -fx-border-color: #f1f1f1;
+  -fx-border-width: 0 0 1 0;
+}
+
+.th {
+  -fx-font-size: 11px;
+  -fx-text-fill: #000000; /* black */
+  -fx-font-weight: 700; /* bold */
+}
+
+.student-row {
+  -fx-alignment: CENTER_LEFT;
+  -fx-padding: 6 0;
+}

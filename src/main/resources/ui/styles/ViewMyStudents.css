@@ -1,0 +1,96 @@
+.page-root {
+  -fx-background-color: #f7f7fb;
+  background-color: #f7f7fb; /* standard property */
+}
+
+.page-title {
+  -fx-font-size: 22px;
+  font-size: 22px; /* standard property */
+  -fx-font-weight: 800;
+  font-weight: 800; /* standard property */
+}
+
+.page-subtitle {
+  -fx-text-fill: #9ca3af;
+  color: #9ca3af; /* standard property */
+  -fx-font-size: 12px;
+  font-size: 12px; /* standard property */
+}
+
+.card {
+  -fx-background-color: white;
+  background-color: white; /* standard property */
+  -fx-background-radius: 18;
+  -fx-padding: 20;
+  padding: 20px; /* standard property */
+  -fx-spacing: 12;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 10, 0, 0, 5);
+}
+
+.table-header {
+  -fx-padding: 10 0;
+  padding: 10px 0; /* standard property */
+  -fx-border-color: #f1f1f1;
+  border-color: #f1f1f1; /* standard property */
+  -fx-border-width: 0 0 1 0;
+  border-width: 0 0 1px 0; /* standard property */
+}
+
+.th {
+  -fx-font-size: 10px;
+  font-size: 10px; /* standard property */
+  -fx-text-fill: #9ca3af;
+  color: #9ca3af; /* standard property */
+  -fx-font-weight: bold;
+  font-weight: bold; /* standard property */
+}
+
+.student-row {
+  -fx-padding: 10 0;
+  padding: 10px 0; /* standard property */
+  -fx-alignment: CENTER_LEFT;
+}
+
+.progress-bar {
+  -fx-pref-height: 6;
+}
+
+.progress-bar .track {
+  -fx-background-radius: 10;
+  -fx-background-color: #e5e7eb;
+  background-color: #e5e7eb; /* standard property */
+}
+
+.progress-bar .bar {
+  -fx-background-radius: 10;
+  -fx-background-insets: 0;
+}
+
+.toggle-pill {
+  -fx-background-color: transparent; /* 🔥 removes the box */
+  -fx-padding: 0; /* 🔥 no extra space */
+  -fx-spacing: 6;
+  -fx-alignment: CENTER;
+}
+
+.tab-btn {
+  -fx-background-radius: 12;
+  -fx-padding: 6 18;
+  -fx-background-color: transparent; /* 👈 IMPORTANT */
+  -fx-text-fill: #7c3aed;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+}
+
+/* Selected button */
+.tab-btn:selected {
+  -fx-background-color: transparent;
+
+  -fx-text-fill: white;
+}
+
+/* Remove focus outline (JavaFX default ugliness) */
+.tab-btn:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
