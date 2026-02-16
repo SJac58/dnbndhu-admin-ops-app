@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.org.dnbndhu.ui.controller.SidebarController"
+      spacing="20"
+      prefWidth="240"
+      styleClass="sidebar">
+
+    <padding>
+        <Insets top="30" right="20" bottom="30" left="20"/>
+    </padding>
+
+    <!-- Logo -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🎓" styleClass="logo-icon"/>
+        <Label text="Deenabandhu" styleClass="logo"/>
+    </HBox>
+
+    <!-- MANAGEMENT -->
+    <VBox spacing="8">
+        <Label text="MANAGEMENT" styleClass="menu-section-title"/>
+
+        <Button styleClass="menu-item" onAction="#goDashboard" text="">
+            <graphic>
+            <HBox spacing="10">
+                <Label text="📊"/>
+                <Label text="Dashboard"/>
+            </HBox>
+            </graphic>
+        </Button>
+
+        <Button styleClass="menu-item" onAction="#goStudents" text="">
+            <graphic>
+            <HBox spacing="10">
+                <Label text="👥"/>
+                <Label text="View my Students"/>
+            </HBox>
+            </graphic>
+        </Button>
+
+        <Button styleClass="menu-item" onAction="#goAttendance" text="">
+            <graphic>
+            <HBox spacing="10">
+                <Label text="🗓️"/>
+                <Label text="Attendance"/>
+            </HBox>
+            </graphic>
+        </Button>
+
+        <Button styleClass="menu-item" onAction="#goEnroll" text="">
+            <graphic>
+            <HBox spacing="10">
+                <Label text="➕"/>
+                <Label text="Enroll New Student"/>
+            </HBox>
+            </graphic>
+        </Button>
+    </VBox>
+
+    <!-- REPORTS -->
+
+
+        <Button styleClass="menu-item" onAction="#goAnalytics" text="">
+            <graphic>
+            <HBox spacing="10">
+                <Label text="📈"/>
+                <Label text="Placement Portal"/>
+            </HBox>
+            </graphic>
+        </Button>
+
+
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <!-- User -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="user-profile">
+        <StackPane>
+    <Circle radius="15" styleClass="avatar-circle"/>
+    <Label text="👩" styleClass="avatar-icon"/>
+</StackPane>
+
+        <VBox spacing="2">
+            <Label text="Geeta M." styleClass="user-name"/>
+            <Label text="ADMINISTRATOR" styleClass="user-role"/>
+        </VBox>
+    </HBox>
+
+</VBox>

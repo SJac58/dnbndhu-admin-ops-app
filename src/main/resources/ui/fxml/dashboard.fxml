@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.DashboardController"
+            styleClass="main-container">
+
+    <!-- Sidebar -->
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <!-- Main content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <VBox spacing="40" styleClass="content-area">
+                <padding>
+                    <Insets top="30" right="60" bottom="40" left="60"/>
+                </padding>
+
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Student Analytics" styleClass="header-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="🔔" styleClass="icon-button"/>
+                </HBox>
+
+                <!-- Hero section -->
+                <StackPane>
+                    <Circle radius="100" styleClass="hero-circle"/>
+                    <VBox alignment="CENTER">
+                        <Label fx:id="totalStudentsLabel" text="0" styleClass="hero-count"/>
+                        <Label text="STUDENTS ENROLLED" styleClass="hero-subtext"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- Analytics Grid -->
+                <GridPane hgap="40" vgap="60">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <!-- Row 1 -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
+                          styleClass="card" prefWidth="420" spacing="15">
+                        <Label text="Demographics" styleClass="card-title"/>
+                        <PieChart fx:id="demographicsChart" prefHeight="200"/>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
+                          styleClass="card" prefWidth="420" spacing="15">
+                        <Label text="Education Level" styleClass="card-title"/>
+                        <VBox fx:id="educationBox" spacing="15"/>
+                    </VBox>
+
+                    <!-- Row 2 -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
+                          styleClass="card" prefWidth="420" spacing="15">
+                        <Label text="Participation" styleClass="card-title"/>
+                        <BarChart fx:id="participationChart" prefHeight="220">
+                            <xAxis><CategoryAxis/></xAxis>
+                            <yAxis><NumberAxis/></yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
+                          styleClass="card" prefWidth="420" spacing="15">
+                        <Label text="Outreach" styleClass="card-title"/>
+                        <HBox spacing="25">
+                            <VBox fx:id="communityBox"/>
+                            <VBox fx:id="volunteerBox"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Row 3: Full width -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="2"
+                          GridPane.columnSpan="2"
+                          styleClass="card"
+                          prefHeight="320" spacing="15">
+                        <Label text="Enrollment Trend" styleClass="card-title"/>
+                        <LineChart fx:id="enrollmentChart" prefHeight="280">
+                            <xAxis><CategoryAxis/></xAxis>
+                            <yAxis><NumberAxis/></yAxis>
+                        </LineChart>
+                    </VBox>
+
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

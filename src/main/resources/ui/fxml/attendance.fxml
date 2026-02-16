@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.AttendanceController"
+            styleClass="main-container">
+
+    <left>
+        <fx:include source="sidebar.fxml"/>
+    </left>
+
+    <center>
+        <VBox spacing="25" styleClass="attendance-root">
+        <fx:define>
+    <ToggleGroup fx:id="batchGroup"/>
+</fx:define>
+
+            <padding>
+                <Insets top="25" right="40" bottom="25" left="40"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Attendance" styleClass="page-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="dateLabel" styleClass="date-pill"/>
+
+            </HBox>
+            <!-- Controls -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+
+    <!-- Left: Search -->
+   <TextField fx:id="searchField"
+           promptText="Search students by name..."
+           styleClass="search-box"
+           onKeyReleased="#filterStudents"/>
+
+
+    <!-- Spacer to push toggle to center -->
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <!-- Center: Toggle Pill -->
+    <HBox styleClass="toggle-pill">
+
+    <ToggleButton text="PUNK"
+                  fx:id="punkToggle"
+                  toggleGroup="${batchGroup}"
+                  styleClass="tab-btn"
+                  selected="true"/>
+
+    <ToggleButton text="THA"
+                  fx:id="thaToggle"
+                  toggleGroup="${batchGroup}"
+                  styleClass="tab-btn"/>
+
+</HBox>
+
+
+    <!-- Spacer to push buttons to right -->
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <!-- Right: Action buttons -->
+   <Button text="Mark All Present"
+        styleClass="ghost-btn"
+        onAction="#markAllPresent"/>
+
+</HBox>
+
+
+            <!-- Table Card -->
+            <VBox styleClass="card">
+<GridPane styleClass="table-header" hgap="40" alignment="CENTER_LEFT">
+    <columnConstraints>
+        <ColumnConstraints prefWidth="60"/>
+        <ColumnConstraints prefWidth="300"/>
+        <ColumnConstraints prefWidth="120"/>
+        <ColumnConstraints prefWidth="80"/>
+    </columnConstraints>
+
+    <Label text="PHOTO" GridPane.columnIndex="0" styleClass="th"/>
+    <Label text="STUDENT NAME" GridPane.columnIndex="1" styleClass="th"/>
+    <Label text="ABSENT" GridPane.columnIndex="3" styleClass="th" alignment="CENTER"/>
+</GridPane>
+
+
+
+                <VBox fx:id="rowsBox" spacing="10"/>
+
+            </VBox>
+
+            <!-- Save -->
+            <HBox alignment="CENTER_RIGHT">
+            <Button text="Save Attendance"
+        styleClass="primary-btn"
+        onAction="#saveAttendance"/>
+         </HBox>
+
+        </VBox>
+    </center>
+</BorderPane>
