@@ -3,25 +3,29 @@ package com.org.dnbndhu.service.enrollment;
 import com.org.dnbndhu.service.imageqa.ImageQualityService;
 import com.org.dnbndhu.service.ocr.OCRService;
 
+import java.io.File;
+
 public class DocumentProcessingService {
 
-    private final ImageQualityService imageQualityService = new ImageQualityService();
-    private final OCRService ocrService = new OCRService();
+    private final ImageQualityService qualityService =
+            new ImageQualityService();
 
-    /**
-     * PHASE 1: Pre-check only (NO DB)
-     */
-    public DocumentPrecheckResult precheckDocument(String filePath) {
+    private final OCRService ocrService =
+            new OCRService();
 
-        double qualityScore = imageQualityService.assessQuality(filePath);
-        String qualityStatus = imageQualityService.getQualityStatus(qualityScore);
+    public String processAndExtractText(File file) {
 
-        if (!"PASS".equalsIgnoreCase(qualityStatus)) {
-            return DocumentPrecheckResult.failed();
+        String path = file.getAbsolutePath();
+
+        double sharpness =
+                qualityService.calculateSharpness(path);
+
+        if (!qualityService.isQualityAcceptable(sharpness)) {
+            throw new RuntimeException(
+                    "Image quality too low. Please upload clearer image."
+            );
         }
 
-        String extractedText = ocrService.extractText(filePath);
-
-        return DocumentPrecheckResult.passed(extractedText, qualityScore);
+        return ocrService.extractText(path);
     }
 }

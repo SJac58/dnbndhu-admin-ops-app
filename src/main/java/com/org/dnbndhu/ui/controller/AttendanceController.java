@@ -1,145 +1,130 @@
 package com.org.dnbndhu.ui.controller;
 
+import com.org.dnbndhu.domain.dto.AttendanceDTO;
+import com.org.dnbndhu.domain.model.Student;
+import com.org.dnbndhu.repository.StudentRepository;
+import com.org.dnbndhu.service.attendance.AttendanceService;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-
-
+import java.util.*;
 
 public class AttendanceController {
 
+    @FXML private VBox rowsBox;
+    @FXML private Label dateLabel;
+    @FXML private TextField searchField;
+
+    private final List<AttendanceDTO> attendanceList = new ArrayList<>();
+
+    private final StudentRepository studentRepository = new StudentRepository();
+    private final AttendanceService attendanceService = new AttendanceService();
+
     @FXML
-    private VBox rowsBox;
-    @FXML
-private ToggleGroup batchGroup;
-@FXML
-private Label dateLabel;
-@FXML
-private TextField searchField;
+    public void initialize() {
 
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
+        dateLabel.setText(today.format(formatter));
 
-@FXML
-public void initialize() {
+        loadStudents(1); // default batch
+    }
 
-    // Set current date
-    LocalDate today = LocalDate.now();
-    DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
-    dateLabel.setText(today.format(formatter));
+    private void loadStudents(int batchId) {
 
-    // Add students
-    addRow("Aarav Sharma");
-    addRow("Priya Patel");
-    addRow("Arjun Kumar");
-    addRow("Ananya Reddy");
-    addRow("Rohan Gupta");
-    addRow("Ishita Singh");
-    addRow("Kabir Mehta");
-}
+        rowsBox.getChildren().clear();
+        attendanceList.clear();
 
+        List<Student> students = studentRepository.findByBatchId(batchId);
 
-    private void addRow(String name) {
+        for (Student s : students) {
+            AttendanceDTO dto =
+                    new AttendanceDTO(s.getStudentId(), s.getFullName());
+            attendanceList.add(dto);
+            addRow(dto);
+        }
+    }
+
+    private void addRow(AttendanceDTO dto) {
 
         GridPane row = new GridPane();
         row.getStyleClass().add("student-row");
         row.setHgap(40);
-        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        // SAME columns as header
         row.getColumnConstraints().addAll(
-                new ColumnConstraints(60),   // PHOTO
-                new ColumnConstraints(300),  // NAME
-                new ColumnConstraints(120),  // GAP
-                new ColumnConstraints(80)    // ABSENT
+                new ColumnConstraints(60),
+                new ColumnConstraints(300),
+                new ColumnConstraints(80)
         );
 
         Circle avatar = new Circle(16);
         avatar.setStyle("-fx-fill: #e5e7eb;");
 
-        Label nameLabel = new Label(name);
+        Label nameLabel = new Label(dto.getFullName());
 
         CheckBox absent = new CheckBox();
+        absent.selectedProperty().addListener((obs, old, selected) ->
+                dto.setAbsent(selected)
+        );
 
         row.add(avatar, 0, 0);
         row.add(nameLabel, 1, 0);
-        row.add(absent, 3, 0);
+        row.add(absent, 2, 0);
 
         rowsBox.getChildren().add(row);
     }
-      @FXML
-private void markAllPresent() {
 
-    // Mark everyone present
-    for (Node node : rowsBox.getChildren()) {
-        if (node instanceof GridPane) {
-            GridPane row = (GridPane) node;
+    @FXML
+    private void markAllPresent() {
+        for (AttendanceDTO dto : attendanceList) {
+            dto.setAbsent(false);
+        }
+        loadStudents(1);
+    }
 
-            for (Node child : row.getChildren()) {
-                if (child instanceof CheckBox) {
-                    ((CheckBox) child).setSelected(false);
-                }
+    @FXML
+    private void saveAttendance() {
+
+        Map<Integer, Boolean> attendanceMap = new HashMap<>();
+
+        for (AttendanceDTO dto : attendanceList) {
+            attendanceMap.put(dto.getStudentId(), dto.isAbsent());
+        }
+
+        attendanceService.saveAttendance(attendanceMap);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Attendance saved successfully.");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void filterStudents() {
+
+        String searchText = searchField.getText().toLowerCase();
+
+        for (Node node : rowsBox.getChildren()) {
+            if (node instanceof GridPane row) {
+
+                Label nameLabel = (Label) row.getChildren().get(1);
+
+                boolean visible =
+                        nameLabel.getText().toLowerCase().contains(searchText);
+
+                row.setVisible(visible);
+                row.setManaged(visible);
             }
         }
     }
-
-    // Show alert
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Attendance Updated");
-    alert.setHeaderText(null);
-    alert.setContentText("All students have been marked present.");
-    alert.showAndWait();
-}
-@FXML
-private void saveAttendance() {
-
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Success");
-    alert.setHeaderText(null);
-    alert.setContentText("Attendance saved successfully.");
-    alert.showAndWait();
-}
-
-@FXML
-private void filterStudents() {
-
-    String searchText = searchField.getText().toLowerCase();
-
-    for (Node node : rowsBox.getChildren()) {
-        if (node instanceof GridPane) {
-            GridPane row = (GridPane) node;
-
-            // Student name is in column 1
-            Label nameLabel = null;
-
-            for (Node child : row.getChildren()) {
-                if (GridPane.getColumnIndex(child) != null
-                        && GridPane.getColumnIndex(child) == 1
-                        && child instanceof Label) {
-                    nameLabel = (Label) child;
-                    break;
-                }
-            }
-
-            if (nameLabel != null) {
-                String studentName = nameLabel.getText().toLowerCase();
-                row.setVisible(studentName.contains(searchText));
-                row.setManaged(studentName.contains(searchText));
-            }
-        }
-    }
-    
-}
-
-
 }

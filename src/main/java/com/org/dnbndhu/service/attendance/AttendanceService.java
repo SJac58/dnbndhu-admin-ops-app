@@ -2,34 +2,31 @@ package com.org.dnbndhu.service.attendance;
 
 import com.org.dnbndhu.repository.AttendanceRepository;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 public class AttendanceService {
 
-    private final AttendanceRepository attendanceRepository =
-            new AttendanceRepository();
+    private final AttendanceRepository repository = new AttendanceRepository();
 
-    public void markAttendance(int studentId, String date, String status) {
+    public void saveAttendance(Map<Integer, Boolean> attendanceMap) {
 
-        // Step 1: Save attendance
-        attendanceRepository.markAttendance(studentId, date, status);
+        String today = LocalDate.now().toString();
 
-        // Step 2: If absent, check absence streak
-        if ("A".equals(status)) {
-            int absences =
-                    attendanceRepository.countConsecutiveAbsences(studentId);
+        for (Map.Entry<Integer, Boolean> entry : attendanceMap.entrySet()) {
 
-            if (absences >= 3) {
-                notifyStudent(studentId);
+            int studentId = entry.getKey();
+            boolean isAbsent = entry.getValue();
+
+            String status = isAbsent ? "A" : "P";
+
+            repository.markAttendance(studentId, today, status);
+
+            // Check 3 consecutive absences
+            if (repository.countConsecutiveAbsences(studentId) >= 3) {
+                System.out.println("⚠ Student ID " + studentId + " has 3 consecutive absences.");
+                // Later to be done: trigger email notification here
             }
         }
-    }
-
-    /**
-     * Stub for now — WhatsApp later
-     */
-    private void notifyStudent(int studentId) {
-        System.out.println(
-                "⚠ Student " + studentId +
-                        " absent for 3 consecutive days. Notification should be sent."
-        );
     }
 }

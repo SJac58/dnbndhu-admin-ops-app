@@ -1,11 +1,30 @@
 package com.org.dnbndhu.service.ocr;
 
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+
+import java.io.File;
+
 public class OCRService {
 
-    public String extractText(String imagePath) {
+    private final ITesseract tesseract;
 
-        // STUB for now
-        // Later: Tess4J integration
-        return "OCR_NOT_IMPLEMENTED_YET";
+    public OCRService() {
+
+        tesseract = new Tesseract();
+
+        tesseract.setDatapath("C:/Program Files/Tesseract-OCR/tessdata");
+        tesseract.setLanguage("eng");
+    }
+
+
+    public String extractText(String filePath) {
+
+        try {
+            return tesseract.doOCR(new File(filePath));
+        } catch (TesseractException e) {
+            throw new RuntimeException("OCR failed", e);
+        }
     }
 }
