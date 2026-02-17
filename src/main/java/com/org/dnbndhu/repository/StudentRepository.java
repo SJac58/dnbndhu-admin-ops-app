@@ -15,24 +15,66 @@ public class StudentRepository {
     public int save(Student student) {
 
         String sql = """
-            INSERT INTO students
-            (full_name, phone, gender, batch_id)
-            VALUES (?, ?, ?, ?)
-        """;
+        INSERT INTO students (
+            full_name,
+            date_of_birth,
+            age,
+            gender,
+            disability_type,
+            disability_percentage,
+            marital_status,
+            religion,
+            caste,
+            sub_caste,
+            aadhaar_no,
+            pan_no,
+            email,
+            phone,
+            address,
+            district,
+            taluq,
+            village,
+            pin_code,
+            referral_source,
+            prior_training,
+            enrollment_date,
+            batch_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
 
         try (
                 Connection conn = SQLiteConnectionManager.getConnection();
                 PreparedStatement ps =
                         conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
+
             ps.setString(1, student.getFullName());
-            ps.setString(2, student.getPhone());
-            ps.setString(3, student.getGender());
-            ps.setInt(4, student.getBatchId());
+            ps.setString(2, student.getDateOfBirth());
+            ps.setObject(3, student.getAge());
+            ps.setString(4, student.getGender());
+            ps.setString(5, student.getDisabilityType());
+            ps.setObject(6, student.getDisabilityPercentage());
+            ps.setString(7, student.getMaritalStatus());
+            ps.setString(8, student.getReligion());
+            ps.setString(9, student.getCaste());
+            ps.setString(10, student.getSubCaste());
+            ps.setString(11, student.getAadhaarNo());
+            ps.setString(12, student.getPanNo());
+            ps.setString(13, student.getEmail());
+            ps.setString(14, student.getPhone());
+            ps.setString(15, student.getAddress());
+            ps.setString(16, student.getDistrict());
+            ps.setString(17, student.getTaluq());
+            ps.setString(18, student.getVillage());
+            ps.setString(19, student.getPinCode());
+            ps.setString(20, student.getReferralSource());
+            ps.setObject(21, student.getPriorTraining());
+            ps.setString(22, student.getEnrollmentDate());
+            ps.setInt(23, student.getBatchId());
 
             ps.executeUpdate();
 
-            // 🔑 Get generated student_id
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 int studentId = rs.getInt(1);
@@ -46,6 +88,7 @@ public class StudentRepository {
             throw new RuntimeException("Failed to save student", e);
         }
     }
+
 
     //for dashboard
     public List<StudentDTO> findAllWithStats(int batchId) {
@@ -161,6 +204,66 @@ public class StudentRepository {
         }
 
         return null;
+    }
+    //for student profile attendance view
+    public double calculateAttendancePercentage(int studentId) {
+
+        String sql = """
+        SELECT 
+            CASE 
+                WHEN COUNT(*) = 0 THEN 0
+                ELSE (SUM(CASE WHEN status = 'P' THEN 1 ELSE 0 END) * 100.0) / COUNT(*)
+            END AS attendance_percent
+        FROM attendance
+        WHERE student_id = ?
+    """;
+
+        try (
+                Connection conn = SQLiteConnectionManager.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, studentId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("attendance_percent");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to calculate attendance percentage", e);
+        }
+
+        return 0;
+    }
+    //for attendance marking
+    public List<Student> findByBatchId(int batchId) {
+
+        String sql = "SELECT student_id, full_name FROM students WHERE batch_id = ?";
+
+        List<Student> list = new ArrayList<>();
+
+        try (
+                Connection conn = SQLiteConnectionManager.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, batchId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Student s = new Student();
+                s.setStudentId(rs.getInt("student_id"));
+                s.setFullName(rs.getString("full_name"));
+                list.add(s);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch students", e);
+        }
+
+        return list;
     }
 
 
