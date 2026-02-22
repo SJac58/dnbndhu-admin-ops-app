@@ -2,8 +2,8 @@ package com.org.dnbndhu.domain.dto;
 
 public class AttendanceDTO {
 
-    private int studentId;
-    private String fullName;
+    private final int studentId;
+    private final String fullName;
     private boolean absent;
 
     public AttendanceDTO(int studentId, String fullName) {

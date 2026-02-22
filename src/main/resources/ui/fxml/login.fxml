@@ -6,14 +6,12 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.shape.Circle?>
 
-
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.org.dnbndhu.ui.controller.LoginController"
            styleClass="root">
 
     <!-- Background gradient layer -->
     <Pane fx:id="backgroundPane" styleClass="background"/>
-
 
     <!-- Center content -->
     <VBox alignment="CENTER"
@@ -24,24 +22,27 @@
         <Label text="Welcome Geeta!" styleClass="title"/>
         <Label text="Please enter your PIN to continue" styleClass="subtitle"/>
 
-        <!-- Logo circle -->
+        <!-- Logo -->
+        <StackPane styleClass="logo-container">
 
+            <ImageView fx:id="logoImage"
+                       fitWidth="140"
+                       fitHeight="140"
+                       preserveRatio="true">
 
-       <StackPane styleClass="logo-container">
-    <ImageView fx:id="logoImage"
-               fitWidth="140"
-               fitHeight="140"
-               preserveRatio="true">
-        <clip>
-            <Circle radius="70"/>
-        </clip>
-        <image>
-            <Image url="@/images/dheenabandhu_logo.png"/>
-        </image>
-    </ImageView>
-    
-    </StackPane>
+                <clip>
+                    <Circle centerX="70"
+                            centerY="70"
+                            radius="70"/>
+                </clip>
 
+                <image>
+                    <Image url="@/ui/images/deenabandhu_logo.png"/>
+                </image>
+
+            </ImageView>
+
+        </StackPane>
 
         <PasswordField promptText="Enter PIN"
                        fx:id="pinField"

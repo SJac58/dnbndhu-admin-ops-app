@@ -1,5 +1,8 @@
 package com.org.dnbndhu.service.ocr;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -10,6 +13,8 @@ public class OCRFieldExtractorService {
     public Map<String, String> extractFields(String documentType, String text) {
 
         Map<String, String> fields = new HashMap<>();
+
+        if (text == null || text.isBlank()) return fields;
 
         switch (documentType.toUpperCase()) {
 
@@ -26,27 +31,57 @@ public class OCRFieldExtractorService {
 
     private void extractAadhaar(Map<String, String> map, String text) {
 
-        // Aadhaar number (xxxx xxxx xxxx)
-        Matcher aadhaar = Pattern.compile("\\d{4}\\s?\\d{4}\\s?\\d{4}")
+        // Aadhaar number
+        Matcher aadhaar = Pattern.compile("\\b\\d{4}\\s?\\d{4}\\s?\\d{4}\\b")
                 .matcher(text);
         if (aadhaar.find()) {
-            map.put("aadhaarNo", aadhaar.group());
+            map.put("aadhaarNo", aadhaar.group().replaceAll("\\s", ""));
         }
 
         // DOB
-        Matcher dob = Pattern.compile("\\d{2}/\\d{2}/\\d{4}")
+        Matcher dob = Pattern.compile("\\b\\d{2}/\\d{2}/\\d{4}\\b")
                 .matcher(text);
         if (dob.find()) {
-            map.put("dateOfBirth", dob.group());
+
+            String dobStr = dob.group();
+            map.put("dateOfBirth", dobStr);
+
+            try {
+                LocalDate birthDate =
+                        LocalDate.parse(dobStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                int age = Period.between(birthDate, LocalDate.now()).getYears();
+                map.put("age", String.valueOf(age));
+
+            } catch (Exception ignored) {}
         }
 
-        // Address (very simplified)
-        if (text.toLowerCase().contains("address")) {
-            String[] lines = text.split("\n");
-            for (String line : lines) {
-                if (line.toLowerCase().contains("address")) {
-                    map.put("address", line.replaceAll("(?i)address", "").trim());
-                }
+        // Gender
+        if (text.toLowerCase().contains("male")) {
+            map.put("gender", "Male");
+        } else if (text.toLowerCase().contains("female")) {
+            map.put("gender", "Female");
+        }
+
+        // Name (very basic heuristic — usually first line without keywords)
+        String[] lines = text.split("\n");
+        for (String line : lines) {
+            if (!line.toLowerCase().contains("government")
+                    && !line.toLowerCase().contains("dob")
+                    && !line.toLowerCase().contains("male")
+                    && !line.toLowerCase().contains("female")
+                    && line.trim().length() > 3) {
+
+                map.putIfAbsent("fullName", line.trim());
+                break;
+            }
+        }
+
+        // Address
+        for (String line : lines) {
+            if (line.toLowerCase().contains("address")) {
+                map.put("address",
+                        line.replaceAll("(?i)address", "").trim());
             }
         }
     }
@@ -55,27 +90,30 @@ public class OCRFieldExtractorService {
 
     private void extractPan(Map<String, String> map, String text) {
 
-        // PAN format: ABCDE1234F
-        Matcher pan = Pattern.compile("[A-Z]{5}[0-9]{4}[A-Z]")
+        // PAN number
+        Matcher pan = Pattern.compile("\\b[A-Z]{5}[0-9]{4}[A-Z]\\b")
                 .matcher(text);
         if (pan.find()) {
             map.put("panNo", pan.group());
         }
 
+        // DOB
+        Matcher dob = Pattern.compile("\\b\\d{2}/\\d{2}/\\d{4}\\b")
+                .matcher(text);
+        if (dob.find()) {
+            map.put("dateOfBirth", dob.group());
+        }
+
+        // Name
         String[] lines = text.split("\n");
-
         for (String line : lines) {
+            if (!line.toLowerCase().contains("income")
+                    && !line.toLowerCase().contains("tax")
+                    && line.trim().length() > 3
+                    && line.matches("^[A-Za-z ]+$")) {
 
-            if (line.toLowerCase().contains("name")) {
-                map.put("fullName", cleanValue(line));
-            }
-
-            if (line.toLowerCase().contains("father")) {
-                map.put("fatherName", cleanValue(line));
-            }
-
-            if (line.matches(".*\\d{2}/\\d{2}/\\d{4}.*")) {
-                map.put("dateOfBirth", line.trim());
+                map.putIfAbsent("fullName", line.trim());
+                break;
             }
         }
     }
@@ -96,26 +134,22 @@ public class OCRFieldExtractorService {
 
     private void extractUdid(Map<String, String> map, String text) {
 
-        if (text.toLowerCase().contains("disability")) {
+        String[] lines = text.split("\n");
 
-            String[] lines = text.split("\n");
+        for (String line : lines) {
 
-            for (String line : lines) {
+            if (line.toLowerCase().contains("disability")) {
+                map.put("disabilityType",
+                        line.replaceAll("(?i)disability|:", "").trim());
+            }
 
-                if (line.toLowerCase().contains("disability")) {
-                    map.put("disabilityType", cleanValue(line));
-                }
+            Matcher percent = Pattern.compile("\\b\\d{1,3}%\\b")
+                    .matcher(line);
 
-                if (line.matches(".*\\d+%.*")) {
-                    map.put("disabilityPercentage",
-                            line.replaceAll("[^0-9]", ""));
-                }
+            if (percent.find()) {
+                map.put("disabilityPercentage",
+                        percent.group().replace("%", ""));
             }
         }
-    }
-
-    private String cleanValue(String line) {
-        return line.replaceAll("(?i)name|father|disability|:", "")
-                .trim();
     }
 }

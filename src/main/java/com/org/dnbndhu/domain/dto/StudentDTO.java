@@ -2,13 +2,13 @@ package com.org.dnbndhu.domain.dto;
 
 public class StudentDTO {
 
-    private int studentId;
-    private String fullName;
-    private String email;
-    private String phone;
+    private final int studentId;
+    private final String fullName;
+    private final String email;
+    private final String phone;
 
-    private double attendancePercentage;
-    private String docsUploaded;
+    private final double attendancePercentage;
+    private final String docsUploaded;
 
     public StudentDTO(int studentId,
                       String fullName,

@@ -1,11 +1,11 @@
 package com.org.dnbndhu.repository;
 
 import com.org.dnbndhu.domain.model.FamilyDetails;
-
 import com.org.dnbndhu.infrastructure.db.SQLiteConnectionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class FamilyDetailsRepository {
 
@@ -30,8 +30,9 @@ public class FamilyDetailsRepository {
 
             ps.executeUpdate();
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save family detail", e);
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Failed to save family detail for student ID: " + f.getStudentId(), e);
         }
     }
 }

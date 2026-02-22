@@ -16,20 +16,20 @@ public class MainApp extends Application {
         primaryStage = stage;
 
         Parent root = FXMLLoader.load(
-                MainApp.class.getResource("/fxml/login.fxml")
+                MainApp.class.getResource("/ui/fxml/login.fxml")
         );
 
         scene = new Scene(root);
 
-        // 🔥 ATTACH ALL CSS ONCE (THIS IS THE KEY)
+        // Attach all CSS once
         scene.getStylesheets().addAll(
-                MainApp.class.getResource("/css/login.css").toExternalForm(),
-                MainApp.class.getResource("/css/dashboard.css").toExternalForm(),
-                MainApp.class.getResource("/css/sidebar.css").toExternalForm(),
-                MainApp.class.getResource("/css/ViewMyStudents.css").toExternalForm(),
-                MainApp.class.getResource("/css/attendance.css").toExternalForm(),
-                MainApp.class.getResource("/css/PlacementPortal.css").toExternalForm(),
-                MainApp.class.getResource("/css/EnrollNewStudent.css").toExternalForm()
+                MainApp.class.getResource("/ui/styles/login.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/dashboard.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/sidebar.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/ViewMyStudents.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/attendance.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/PlacementPortal.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/EnrollNewStudent.css").toExternalForm()
         );
 
         stage.setTitle("Deenabandhu Service Learning");
@@ -38,16 +38,16 @@ public class MainApp extends Application {
         stage.show();
     }
 
-    // ===== Scene switching helper =====
+    // Scene switching helper
     public static void setRoot(String fxml) {
         try {
             System.out.println("Loading: " + fxml);
 
             Parent root = FXMLLoader.load(
-                    MainApp.class.getResource("/fxml/" + fxml)
+                    MainApp.class.getResource("/ui/fxml/" + fxml)
             );
 
-            scene.setRoot(root); // 👈 IMPORTANT: reuse same scene
+            scene.setRoot(root);
 
         } catch (Exception e) {
             System.out.println("FAILED to load " + fxml);
@@ -55,13 +55,14 @@ public class MainApp extends Application {
         }
     }
 
-    // ===== Scene switching with preloaded root =====
-public static void setRoot(Parent root) {
-    scene.setRoot(root);
-}
-
+    public static void setRoot(Parent root) {
+        scene.setRoot(root);
+    }
 
     public static void main(String[] args) {
         launch(args);
+    }
+    public static void setRootWithNode(Parent node) {
+        scene.setRoot(node);
     }
 }

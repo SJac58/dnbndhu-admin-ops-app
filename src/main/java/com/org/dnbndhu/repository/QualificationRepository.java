@@ -12,7 +12,7 @@ public class QualificationRepository {
 
         String sql = """
             INSERT INTO qualifications
-            (student_id, education_level, institution, board_university, year_of_passing)
+            (student_id, education_level, institution, board, year_of_passing)
             VALUES (?, ?, ?, ?, ?)
         """;
 
@@ -24,7 +24,7 @@ public class QualificationRepository {
             ps.setInt(1, q.getStudentId());
             ps.setString(2, q.getEducationLevel());
             ps.setString(3, q.getInstitution());
-            ps.setString(4, q.getBoardUniversity());
+            ps.setString(4, q.getBoardUniversity());  // maps to DB column 'board'
             ps.setObject(5, q.getYearOfPassing());
 
             ps.executeUpdate();

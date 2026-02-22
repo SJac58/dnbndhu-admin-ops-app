@@ -3,6 +3,11 @@ package com.org.dnbndhu.ui.controller;
 import com.org.dnbndhu.ui.MainApp;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class SidebarController {
 
@@ -23,7 +28,7 @@ public class SidebarController {
 
     @FXML
     private void goEnroll() {
-        MainApp.setRoot("EnrollNewStudent.fxml");
+        MainApp.setRoot("UploadDocumentsPopup.fxml");
     }
 
     @FXML

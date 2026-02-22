@@ -3,10 +3,7 @@ package com.org.dnbndhu.application;
 import com.org.dnbndhu.domain.model.FamilyDetails;
 import com.org.dnbndhu.domain.model.Qualification;
 import com.org.dnbndhu.domain.model.Student;
-import com.org.dnbndhu.repository.DocumentRepository;
-import com.org.dnbndhu.repository.FamilyDetailsRepository;
-import com.org.dnbndhu.repository.QualificationRepository;
-import com.org.dnbndhu.repository.StudentRepository;
+import com.org.dnbndhu.repository.*;
 
 import java.util.List;
 
@@ -17,9 +14,6 @@ public class EnrollmentWorkflow {
     private final QualificationRepository qualificationRepository = new QualificationRepository();
     private final FamilyDetailsRepository familyDetailsRepository = new FamilyDetailsRepository();
 
-    /**
-     * FINAL COMMIT STEP
-     */
     public void commitEnrollment(
             Student student,
             List<AcceptedDocument> acceptedDocuments,
@@ -51,5 +45,4 @@ public class EnrollmentWorkflow {
 
         System.out.println("✔ Full enrollment committed");
     }
-
 }

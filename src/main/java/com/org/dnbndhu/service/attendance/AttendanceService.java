@@ -1,17 +1,29 @@
 package com.org.dnbndhu.service.attendance;
 
 import com.org.dnbndhu.repository.AttendanceRepository;
+import com.org.dnbndhu.repository.StudentRepository;
+import com.org.dnbndhu.service.notification.EmailNotificationService;
+import com.org.dnbndhu.domain.model.Student;
 
 import java.time.LocalDate;
 import java.util.Map;
 
 public class AttendanceService {
 
-    private final AttendanceRepository repository = new AttendanceRepository();
+    private final AttendanceRepository attendanceRepository;
+    private final StudentRepository studentRepository;
+    private final EmailNotificationService notificationService;
 
-    public void saveAttendance(Map<Integer, Boolean> attendanceMap) {
+    public AttendanceService() {
+        this.attendanceRepository = new AttendanceRepository();
+        this.studentRepository = new StudentRepository();
+        this.notificationService = new EmailNotificationService();
+    }
 
-        String today = LocalDate.now().toString();
+    // ================= SAVE ATTENDANCE =================
+    public void saveAttendance(Map<Integer, Boolean> attendanceMap, LocalDate date) {
+
+        String attendanceDate = date.toString();
 
         for (Map.Entry<Integer, Boolean> entry : attendanceMap.entrySet()) {
 
@@ -20,13 +32,41 @@ public class AttendanceService {
 
             String status = isAbsent ? "A" : "P";
 
-            repository.markAttendance(studentId, today, status);
+            attendanceRepository.markAttendance(studentId, attendanceDate, status);
 
-            // Check 3 consecutive absences
-            if (repository.countConsecutiveAbsences(studentId) >= 3) {
-                System.out.println("⚠ Student ID " + studentId + " has 3 consecutive absences.");
-                // Later to be done: trigger email notification here
+            if ("A".equals(status)) {
+
+                int consecutiveAbsences =
+                        attendanceRepository.countConsecutiveAbsences(studentId);
+
+                if (consecutiveAbsences >= 3) {
+
+                    Student student = studentRepository.findById(studentId);
+
+                    if (student != null && student.getEmail() != null) {
+
+                        String message = "Dear " + student.getFullName()
+                                + ", you have been absent for "
+                                + consecutiveAbsences
+                                + " consecutive days. Please contact administration.";
+
+                        notificationService.sendEmail(
+                                student.getEmail(),
+                                "Attendance Warning",
+                                message
+                        );
+                    }
+                }
             }
         }
+    }
+
+    public void saveAttendance(Map<Integer, Boolean> attendanceMap) {
+        saveAttendance(attendanceMap, LocalDate.now());
+    }
+
+    // ================= ATTENDANCE PERCENTAGE =================
+    public double calculateAttendancePercentage(int studentId) {
+        return attendanceRepository.calculateAttendancePercentage(studentId);
     }
 }

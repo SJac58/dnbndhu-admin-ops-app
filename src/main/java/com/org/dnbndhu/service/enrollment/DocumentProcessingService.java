@@ -1,31 +1,59 @@
 package com.org.dnbndhu.service.enrollment;
 
 import com.org.dnbndhu.service.imageqa.ImageQualityService;
+import com.org.dnbndhu.service.ocr.OCRFieldExtractorService;
 import com.org.dnbndhu.service.ocr.OCRService;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DocumentProcessingService {
 
-    private final ImageQualityService qualityService =
-            new ImageQualityService();
+    private final ImageQualityService imageQualityService;
+    private final OCRService ocrService;
+    private final OCRFieldExtractorService fieldExtractorService;
 
-    private final OCRService ocrService =
-            new OCRService();
+    public DocumentProcessingService() {
+        this.imageQualityService = new ImageQualityService();
+        this.ocrService = new OCRService();
+        this.fieldExtractorService = new OCRFieldExtractorService();
+    }
 
-    public String processAndExtractText(File file) {
+    /**
+     * Processes uploaded documents and returns extracted fields
+     */
+    public Map<String, String> processDocuments(
+            Map<String, String> documentTypeToPathMap) {
 
-        String path = file.getAbsolutePath();
+        Map<String, String> combinedFields = new HashMap<>();
 
-        double sharpness =
-                qualityService.calculateSharpness(path);
+        for (Map.Entry<String, String> entry : documentTypeToPathMap.entrySet()) {
 
-        if (!qualityService.isQualityAcceptable(sharpness)) {
-            throw new RuntimeException(
-                    "Image quality too low. Please upload clearer image."
-            );
+            String documentType = entry.getKey();
+            String filePath = entry.getValue();
+
+            // 1️⃣ Image Quality Check
+            double qualityScore = imageQualityService.evaluateQuality(filePath);
+            String qualityStatus =
+                    imageQualityService.getQualityStatus(qualityScore);
+
+            if (!"GOOD".equals(qualityStatus)) {
+                System.out.println("⚠ Skipping low quality document: " + documentType);
+                continue;
+            }
+
+            // 2️⃣ OCR Extraction
+            String extractedText = ocrService.extractText(filePath);
+
+            // 3️⃣ Field Extraction
+            Map<String, String> extractedFields =
+                    fieldExtractorService.extractFields(documentType, extractedText);
+
+            // 4️⃣ Merge fields (first value wins)
+            extractedFields.forEach(combinedFields::putIfAbsent);
         }
 
-        return ocrService.extractText(path);
+        return combinedFields;
     }
 }

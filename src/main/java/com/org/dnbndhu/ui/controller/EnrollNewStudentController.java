@@ -1,55 +1,148 @@
 package com.org.dnbndhu.ui.controller;
 
-import com.org.dnbndhu.application.AcceptedDocument;
-import com.org.dnbndhu.application.EnrollmentWorkflow;
+import com.org.dnbndhu.domain.dto.EnrollmentDraftDTO;
 import com.org.dnbndhu.domain.model.FamilyDetails;
 import com.org.dnbndhu.domain.model.Qualification;
 import com.org.dnbndhu.domain.model.Student;
-import com.org.dnbndhu.service.enrollment.DocumentProcessingService;
-import com.org.dnbndhu.service.ocr.OCRFieldExtractorService;
+import com.org.dnbndhu.service.enrollment.EnrollmentService;
+import com.org.dnbndhu.ui.MainApp;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.FileChooser;
+import javafx.scene.layout.GridPane;
 
-import java.io.File;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EnrollNewStudentController {
 
     @FXML private BorderPane rootPane;
-
+    @FXML private DatePicker dobPicker;
     @FXML private TextField nameField;
     @FXML private TextField ageField;
     @FXML private TextField disabilityTypeField;
     @FXML private TextField disabilityPercentField;
     @FXML private TextArea addressField;
 
+    @FXML private TextField districtField;
+    @FXML private TextField taluqField;
+    @FXML private TextField villageField;
+    @FXML private TextField pinField;
+
+    @FXML private TextField aadhaarField;
+    @FXML private TextField panField;
+    @FXML private TextField religionField;
+    @FXML private TextField casteField;
+    @FXML private TextField subCasteField;
+    @FXML private TextField emailField;
+    @FXML private TextField phoneField;
+
     @FXML private DatePicker applicationDatePicker;
+
     @FXML private RadioButton maleRadio;
     @FXML private RadioButton femaleRadio;
-
     @FXML private RadioButton marriedRadio;
     @FXML private RadioButton unmarriedRadio;
     @FXML private RadioButton divorcedRadio;
 
-    private final Map<String, File> uploadedDocuments = new HashMap<>();
+    @FXML private GridPane qualificationTable;
+    @FXML private GridPane familyTable;
 
-    private final DocumentProcessingService processingService =
-            new DocumentProcessingService();
+    private EnrollmentDraftDTO draft;
 
-    private final OCRFieldExtractorService extractor =
-            new OCRFieldExtractorService();
+    private final EnrollmentService enrollmentService =
+            new EnrollmentService();
 
-    private final EnrollmentWorkflow workflow =
-            new EnrollmentWorkflow();
+    // ================= RECEIVE OCR DRAFT =================
+    public void setDraft(EnrollmentDraftDTO draft) {
+        this.draft = draft;
+        applyDraftToUI();
+    }
 
-    // ==============================
-    // SUBMIT → SAVE TO DB
-    // ==============================
+    // ================= APPLY OCR DATA =================
+    private void applyDraftToUI() {
+
+        if (draft == null) return;
+
+        Map<String, String> fields = draft.getAllFields();
+
+        setIfPresent(nameField, fields.get("fullName"));
+        setIfPresent(aadhaarField, fields.get("aadhaarNo"));
+        setIfPresent(panField, fields.get("panNo"));
+        setIfPresent(addressField, fields.get("address"));
+        setIfPresent(disabilityTypeField, fields.get("disabilityType"));
+        setIfPresent(disabilityPercentField, fields.get("disabilityPercentage"));
+        setIfPresent(pinField, fields.get("pinCode"));
+        if (fields.get("dateOfBirth") != null) {
+            try {
+                dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth"),
+                        java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private void setIfPresent(TextInputControl field, String value) {
+        if (value != null && !value.isBlank()) {
+            field.setText(value);
+        }
+    }
+
+    // ================= INITIALIZE =================
+    @FXML
+    public void initialize() {
+        setupQualificationHeaders();
+        setupFamilyHeaders();
+    }
+
+    // ================= HEADERS =================
+    private void setupQualificationHeaders() {
+
+        qualificationTable.getChildren().clear();
+
+        qualificationTable.add(new Label("Education Level"), 0, 0);
+        qualificationTable.add(new Label("Institution"), 1, 0);
+        qualificationTable.add(new Label("Board/University"), 2, 0);
+        qualificationTable.add(new Label("Year"), 3, 0);
+    }
+
+    private void setupFamilyHeaders() {
+
+        familyTable.getChildren().clear();
+
+        familyTable.add(new Label("Name"), 0, 0);
+        familyTable.add(new Label("Relationship"), 1, 0);
+        familyTable.add(new Label("Income"), 2, 0);
+        familyTable.add(new Label("Phone"), 3, 0);
+    }
+
+    // ================= ADD ROWS =================
+    @FXML
+    private void addQualificationRow() {
+
+        int row = qualificationTable.getRowCount();
+
+        qualificationTable.add(new TextField(), 0, row);
+        qualificationTable.add(new TextField(), 1, row);
+        qualificationTable.add(new TextField(), 2, row);
+        qualificationTable.add(new TextField(), 3, row);
+    }
+
+    @FXML
+    private void addFamilyRow() {
+
+        int row = familyTable.getRowCount();
+
+        familyTable.add(new TextField(), 0, row);
+        familyTable.add(new TextField(), 1, row);
+        familyTable.add(new TextField(), 2, row);
+        familyTable.add(new TextField(), 3, row);
+    }
+
+    // ================= SUBMIT =================
     @FXML
     private void onSubmit() {
 
@@ -61,39 +154,53 @@ public class EnrollNewStudentController {
             }
 
             Student student = buildStudentFromForm();
-
-            List<AcceptedDocument> docs =
-                    buildAcceptedDocuments();
-
-            // Build qualifications and family details from UI
             List<Qualification> qualifications = buildQualificationsFromUI();
             List<FamilyDetails> familyDetails = buildFamilyDetailsFromUI();
 
-            // Call the workflow with full set of parameters
-            workflow.commitEnrollment(student, docs, qualifications, familyDetails);
+            int studentId = enrollmentService.enrollStudent(
+                    student,
+                    qualifications,
+                    familyDetails,
+                    draft
+            );
 
-            showInfo("Success", "Student enrolled successfully");
-
+            showInfo("Success", "Student enrolled successfully. ID: " + studentId);
             clearForm();
 
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Error", "Failed to enroll student");
+            showError("Error", e.getMessage());
         }
     }
 
-    // ==============================
-    // BUILD STUDENT ENTITY
-    // ==============================
+    @FXML
+    private void onCancel() {
+        MainApp.setRoot("dashboard.fxml");
+    }
+
     private Student buildStudentFromForm() {
 
         Student s = new Student();
 
         s.setFullName(nameField.getText());
+        if (dobPicker.getValue() != null) {
+            s.setDateOfBirth(dobPicker.getValue().toString());
+        }
         s.setAge(parseInteger(ageField.getText()));
         s.setDisabilityType(disabilityTypeField.getText());
         s.setDisabilityPercentage(parseInteger(disabilityPercentField.getText()));
         s.setAddress(addressField.getText());
+        s.setDistrict(districtField.getText());
+        s.setTaluq(taluqField.getText());
+        s.setVillage(villageField.getText());
+        s.setPinCode(pinField.getText());
+        s.setAadhaarNo(aadhaarField.getText());
+        s.setPanNo(panField.getText());
+        s.setReligion(religionField.getText());
+        s.setCaste(casteField.getText());
+        s.setSubCaste(subCasteField.getText());
+        s.setEmail(emailField.getText());
+        s.setPhone(phoneField.getText());
 
         if (maleRadio.isSelected()) s.setGender("Male");
         else if (femaleRadio.isSelected()) s.setGender("Female");
@@ -103,170 +210,28 @@ public class EnrollNewStudentController {
         else if (divorcedRadio.isSelected()) s.setMaritalStatus("Divorced");
 
         s.setEnrollmentDate(LocalDate.now().toString());
-        s.setBatchId(1); // adjust later dynamically
+        s.setBatchId(1);
 
         return s;
     }
 
-    // ==============================
-    // BUILD DOCUMENT LIST
-    // ==============================
-    private List<AcceptedDocument> buildAcceptedDocuments() {
-
-        List<AcceptedDocument> list = new ArrayList<>();
-
-        for (Map.Entry<String, File> entry : uploadedDocuments.entrySet()) {
-
-            int documentTypeId =
-                    mapDocumentNameToId(entry.getKey());
-
-            list.add(new AcceptedDocument(
-                    documentTypeId,
-                    entry.getValue().getAbsolutePath(),
-                    1.0
-            ));
-        }
-
-        return list;
-    }
     private List<Qualification> buildQualificationsFromUI() {
-        List<Qualification> list = new ArrayList<>();
-
-        // loop through GridPane rows
-        // read textfields
-        // create Qualification objects
-        // add to list
-
-        return list;
+        return new ArrayList<>();
     }
 
-    // Build family details from UI (placeholder - parse your UI controls here)
     private List<FamilyDetails> buildFamilyDetailsFromUI() {
-        List<FamilyDetails> list = new ArrayList<>();
-
-        // loop through family details UI rows
-        // read textfields (name, relation, age, occupation, etc.)
-        // create FamilyDetails objects and add to list
-
-        return list;
+        return new ArrayList<>();
     }
 
-    private int mapDocumentNameToId(String name) {
-
-        return switch (name.toUpperCase()) {
-            case "AADHAR_CARD" -> 1;
-            case "PAN_CARD" -> 2;
-            case "EDUCATION_CERTIFICATE" -> 3;
-            case "PHOTO" -> 4;
-            case "MEDICAL_CERTIFICATE" -> 5;
-            case "UDID_CARD" -> 6;
-            case "BANK_PASSBOOK" -> 7;
-            default -> 1;
-        };
-    }
-
-    // ==============================
-    // FILE UPLOAD + OCR + AUTOFILL
-    // ==============================
-    private Button buildUploadButton(String label, String documentType) {
-
-        Button btn = new Button(label);
-
-        btn.setOnAction(e -> {
-
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle(label);
-
-            chooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter(
-                            "Documents", "*.pdf", "*.png", "*.jpg", "*.jpeg")
-            );
-
-            File selectedFile =
-                    chooser.showOpenDialog(rootPane.getScene().getWindow());
-
-            if (selectedFile == null) return;
-
-            try {
-
-                // 1️⃣ Quality check + OCR
-                String extractedText =
-                        processingService.processAndExtractText(selectedFile);
-
-                // 2️⃣ Extract fields
-                Map<String, String> fields =
-                        extractor.extractFields(documentType, extractedText);
-
-                // 3️⃣ Auto-fill safely
-                autoFillForm(fields);
-
-                // 4️⃣ Save for final commit
-                uploadedDocuments.put(documentType, selectedFile);
-
-                btn.setText("✔ " + label);
-                btn.setDisable(true);
-
-            } catch (Exception ex) {
-                showError("OCR / Quality Error", ex.getMessage());
-            }
-        });
-
-        return btn;
-    }
-
-    // ==============================
-    // AUTO-FILL SAFE
-    // ==============================
-    private void autoFillForm(Map<String, String> fields) {
-
-        if (fields.containsKey("fullName")
-                && nameField.getText().isBlank()) {
-            nameField.setText(fields.get("fullName"));
-        }
-
-        if (fields.containsKey("address")
-                && addressField.getText().isBlank()) {
-            addressField.setText(fields.get("address"));
-        }
-
-        if (fields.containsKey("disabilityType")
-                && disabilityTypeField.getText().isBlank()) {
-            disabilityTypeField.setText(fields.get("disabilityType"));
-        }
-
-        if (fields.containsKey("disabilityPercentage")
-                && disabilityPercentField.getText().isBlank()) {
-            disabilityPercentField.setText(fields.get("disabilityPercentage"));
-        }
-
-        if (fields.containsKey("pinCode")) {
-            System.out.println("Detected Pincode: " + fields.get("pinCode"));
-        }
-
-        if (fields.containsKey("panNo")) {
-            System.out.println("Detected PAN: " + fields.get("panNo"));
-        }
-
-        if (fields.containsKey("aadhaarNo")) {
-            System.out.println("Detected Aadhaar: " + fields.get("aadhaarNo"));
-        }
-    }
-
-    // ==============================
-    // HELPERS
-    // ==============================
     private Integer parseInteger(String value) {
         try {
-            return value == null || value.isBlank()
-                    ? null
-                    : Integer.parseInt(value);
-        } catch (Exception e) {
-            return null;
-        }
+            return value == null || value.isBlank() ? null : Integer.parseInt(value);
+        } catch (Exception e) { return null; }
     }
 
     private void clearForm() {
-
+        nameField.clear();
+        addressField.clear();
     }
 
     private void showInfo(String title, String msg) {
@@ -275,8 +240,5 @@ public class EnrollNewStudentController {
 
     private void showError(String title, String msg) {
         new Alert(Alert.AlertType.ERROR, msg).showAndWait();
-    }
-
-    public void addQualificationRow(ActionEvent actionEvent) {
     }
 }

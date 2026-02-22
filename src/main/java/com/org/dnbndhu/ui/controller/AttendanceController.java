@@ -28,13 +28,16 @@ public class AttendanceController {
     private final StudentRepository studentRepository = new StudentRepository();
     private final AttendanceService attendanceService = new AttendanceService();
 
+    private LocalDate selectedDate;
+
     @FXML
     public void initialize() {
 
-        LocalDate today = LocalDate.now();
+        selectedDate = LocalDate.now();
+
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
-        dateLabel.setText(today.format(formatter));
+        dateLabel.setText(selectedDate.format(formatter));
 
         loadStudents(1); // default batch
     }
@@ -83,14 +86,24 @@ public class AttendanceController {
         rowsBox.getChildren().add(row);
     }
 
+    // ================= MARK ALL PRESENT =================
     @FXML
     private void markAllPresent() {
+
         for (AttendanceDTO dto : attendanceList) {
             dto.setAbsent(false);
         }
-        loadStudents(1);
+
+        // Update UI checkboxes visually
+        for (Node node : rowsBox.getChildren()) {
+            if (node instanceof GridPane row) {
+                CheckBox cb = (CheckBox) row.getChildren().get(2);
+                cb.setSelected(false);
+            }
+        }
     }
 
+    // ================= SAVE =================
     @FXML
     private void saveAttendance() {
 
@@ -100,7 +113,7 @@ public class AttendanceController {
             attendanceMap.put(dto.getStudentId(), dto.isAbsent());
         }
 
-        attendanceService.saveAttendance(attendanceMap);
+        attendanceService.saveAttendance(attendanceMap, selectedDate);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
@@ -109,6 +122,7 @@ public class AttendanceController {
         alert.showAndWait();
     }
 
+    // ================= FILTER =================
     @FXML
     private void filterStudents() {
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.org.dnbndhu.ui.controller.UploadDocumentsPopupController"
+            styleClass="main-container">
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox spacing="30" alignment="TOP_CENTER" styleClass="page-root">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <Label text="Step 1: Upload Student Documents"
+                       styleClass="page-title"/>
+
+                <!-- Toggle -->
+                <HBox spacing="15" alignment="CENTER">
+                    <ToggleButton fx:id="punkBtn" text="PUNK"/>
+                    <ToggleButton fx:id="thaBtn" text="THA"/>
+                </HBox>
+
+                <!-- Upload Buttons -->
+                <VBox fx:id="uploadArea"
+                      spacing="15"
+                      alignment="CENTER"
+                      maxWidth="400"/>
+
+                <!-- Continue -->
+                <Button text="Continue to Enrollment"
+                        styleClass="primary-btn"
+                        onAction="#onSubmitDocuments"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
