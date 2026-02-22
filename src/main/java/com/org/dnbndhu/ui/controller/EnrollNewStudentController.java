@@ -8,7 +8,7 @@ import com.org.dnbndhu.service.enrollment.EnrollmentService;
 import com.org.dnbndhu.ui.MainApp;
 
 import javafx.fxml.FXML;
-
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -63,7 +63,6 @@ public class EnrollNewStudentController {
         applyDraftToUI();
     }
 
-    // ================= APPLY OCR DATA =================
     private void applyDraftToUI() {
 
         if (draft == null) return;
@@ -77,10 +76,10 @@ public class EnrollNewStudentController {
         setIfPresent(disabilityTypeField, fields.get("disabilityType"));
         setIfPresent(disabilityPercentField, fields.get("disabilityPercentage"));
         setIfPresent(pinField, fields.get("pinCode"));
+
         if (fields.get("dateOfBirth") != null) {
             try {
-                dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth"),
-                        java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth")));
             } catch (Exception ignored) {}
         }
     }
@@ -91,14 +90,12 @@ public class EnrollNewStudentController {
         }
     }
 
-    // ================= INITIALIZE =================
     @FXML
     public void initialize() {
         setupQualificationHeaders();
         setupFamilyHeaders();
     }
 
-    // ================= HEADERS =================
     private void setupQualificationHeaders() {
 
         qualificationTable.getChildren().clear();
@@ -119,7 +116,6 @@ public class EnrollNewStudentController {
         familyTable.add(new Label("Phone"), 3, 0);
     }
 
-    // ================= ADD ROWS =================
     @FXML
     private void addQualificationRow() {
 
@@ -142,7 +138,6 @@ public class EnrollNewStudentController {
         familyTable.add(new TextField(), 3, row);
     }
 
-    // ================= SUBMIT =================
     @FXML
     private void onSubmit() {
 
@@ -183,9 +178,11 @@ public class EnrollNewStudentController {
         Student s = new Student();
 
         s.setFullName(nameField.getText());
+
         if (dobPicker.getValue() != null) {
             s.setDateOfBirth(dobPicker.getValue().toString());
         }
+
         s.setAge(parseInteger(ageField.getText()));
         s.setDisabilityType(disabilityTypeField.getText());
         s.setDisabilityPercentage(parseInteger(disabilityPercentField.getText()));
@@ -216,16 +213,80 @@ public class EnrollNewStudentController {
     }
 
     private List<Qualification> buildQualificationsFromUI() {
-        return new ArrayList<>();
+
+        List<Qualification> list = new ArrayList<>();
+
+        for (int row = 1; row < qualificationTable.getRowCount(); row++) {
+
+            TextField education = getTextField(qualificationTable, row, 0);
+            TextField institution = getTextField(qualificationTable, row, 1);
+            TextField board = getTextField(qualificationTable, row, 2);
+            TextField year = getTextField(qualificationTable, row, 3);
+
+            if (education != null && !education.getText().isBlank()) {
+
+                Qualification q = new Qualification();
+                q.setEducationLevel(education.getText());
+                q.setInstitution(institution != null ? institution.getText() : null);
+                q.setBoardUniversity(board != null ? board.getText() : null);
+                q.setYearOfPassing(parseInteger(year != null ? year.getText() : null));
+
+                list.add(q);
+            }
+        }
+
+        return list;
     }
 
     private List<FamilyDetails> buildFamilyDetailsFromUI() {
-        return new ArrayList<>();
+
+        List<FamilyDetails> list = new ArrayList<>();
+
+        for (int row = 1; row < familyTable.getRowCount(); row++) {
+
+            TextField name = getTextField(familyTable, row, 0);
+            TextField relation = getTextField(familyTable, row, 1);
+            TextField income = getTextField(familyTable, row, 2);
+            TextField phone = getTextField(familyTable, row, 3);
+
+            if (name != null && !name.getText().isBlank()) {
+
+                FamilyDetails f = new FamilyDetails();
+                f.setMemberName(name.getText());
+                f.setRelationship(relation != null ? relation.getText() : null);
+                f.setIncome(parseDouble(income != null ? income.getText() : null));
+                f.setPhone(phone != null ? phone.getText() : null);
+
+                list.add(f);
+            }
+        }
+
+        return list;
+    }
+
+    private TextField getTextField(GridPane grid, int row, int col) {
+
+        for (Node node : grid.getChildren()) {
+
+            Integer r = GridPane.getRowIndex(node);
+            Integer c = GridPane.getColumnIndex(node);
+
+            if (r != null && c != null && r == row && c == col) {
+                return (TextField) node;
+            }
+        }
+        return null;
     }
 
     private Integer parseInteger(String value) {
         try {
             return value == null || value.isBlank() ? null : Integer.parseInt(value);
+        } catch (Exception e) { return null; }
+    }
+
+    private Double parseDouble(String value) {
+        try {
+            return value == null || value.isBlank() ? null : Double.parseDouble(value);
         } catch (Exception e) { return null; }
     }
 
