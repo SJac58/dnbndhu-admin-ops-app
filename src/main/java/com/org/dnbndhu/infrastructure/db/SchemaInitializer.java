@@ -1,11 +1,16 @@
 package com.org.dnbndhu.infrastructure.db;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
-public class SchemaInitializer {
+public final class SchemaInitializer {
+
+    private SchemaInitializer() {
+    }
 
     public static void init() {
 
@@ -13,17 +18,25 @@ public class SchemaInitializer {
                 Connection conn = SQLiteConnectionManager.getConnection();
                 Statement stmt = conn.createStatement()
         ) {
-            String schemaSql = Files.readString(
-                    Paths.get("src/main/resources/db/schema.sql")
-            );
+
+            InputStream inputStream = SchemaInitializer.class
+                    .getClassLoader()
+                    .getResourceAsStream("db/schema.sql");
+
+            if (inputStream == null) {
+                throw new RuntimeException("schema.sql not found in resources/db/");
+            }
+
+            String schemaSql = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
 
             stmt.executeUpdate(schemaSql);
 
-            System.out.println("✔ Database schema initialized");
+            System.out.println("✔ Database schema initialized successfully");
 
         } catch (Exception e) {
             throw new RuntimeException("Schema initialization failed", e);
         }
     }
 }
-

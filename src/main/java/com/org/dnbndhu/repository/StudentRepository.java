@@ -4,50 +4,48 @@ import com.org.dnbndhu.domain.dto.StudentDTO;
 import com.org.dnbndhu.domain.model.Student;
 import com.org.dnbndhu.infrastructure.db.SQLiteConnectionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRepository {
 
+    // ===============================
+    // SAVE STUDENT
+    // ===============================
     public int save(Student student) {
 
         String sql = """
-        INSERT INTO students (
-            full_name,
-            date_of_birth,
-            age,
-            gender,
-            disability_type,
-            disability_percentage,
-            marital_status,
-            religion,
-            caste,
-            sub_caste,
-            aadhaar_no,
-            pan_no,
-            email,
-            phone,
-            address,
-            district,
-            taluq,
-            village,
-            pin_code,
-            referral_source,
-            prior_training,
-            enrollment_date,
-            batch_id
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """;
+            INSERT INTO students (
+                full_name,
+                date_of_birth,
+                age,
+                gender,
+                disability_type,
+                disability_percentage,
+                marital_status,
+                religion,
+                caste,
+                sub_caste,
+                aadhaar_no,
+                pan_no,
+                email,
+                phone,
+                address,
+                district,
+                taluq,
+                village,
+                pin_code,
+                referral_source,
+                prior_training,
+                batch_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
-        try (
-                Connection conn = SQLiteConnectionManager.getConnection();
-                PreparedStatement ps =
-                        conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
-        ) {
+        try (Connection conn = SQLiteConnectionManager.getConnection();
+             PreparedStatement ps =
+                     conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, student.getFullName());
             ps.setString(2, student.getDateOfBirth());
@@ -70,16 +68,13 @@ public class StudentRepository {
             ps.setString(19, student.getPinCode());
             ps.setString(20, student.getReferralSource());
             ps.setObject(21, student.getPriorTraining());
-            ps.setString(22, student.getEnrollmentDate());
-            ps.setInt(23, student.getBatchId());
+            ps.setInt(22, student.getBatchId());
 
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
-                int studentId = rs.getInt(1);
-                System.out.println("✔ Student saved with ID: " + studentId);
-                return studentId;
+                return rs.getInt(1);
             }
 
             throw new RuntimeException("Student saved but ID not generated");
@@ -89,37 +84,36 @@ public class StudentRepository {
         }
     }
 
-
-    //for dashboard
+    // ===============================
+    // DASHBOARD VIEW
+    // ===============================
     public List<StudentDTO> findAllWithStats(int batchId) {
 
         String sql = """
-        SELECT s.student_id,
-               s.full_name,
-               s.email,
-               s.phone,
-               
-               -- Attendance %
-               IFNULL((
-                   SELECT 
-                       (SUM(CASE WHEN a.status='P' THEN 1 ELSE 0 END) * 100.0) /
-                       COUNT(*)
-                   FROM attendance a
-                   WHERE a.student_id = s.student_id
-               ), 0) AS attendance_percentage,
+            SELECT s.student_id,
+                   s.full_name,
+                   s.email,
+                   s.phone,
+                   
+                   IFNULL((
+                       SELECT 
+                           (SUM(CASE WHEN a.status='P' THEN 1 ELSE 0 END) * 100.0) /
+                           COUNT(*)
+                       FROM attendance a
+                       WHERE a.student_id = s.student_id
+                   ), 0) AS attendance_percentage,
 
-               -- Documents uploaded count
-               (
-                   SELECT COUNT(*)
-                   FROM student_documents sd
-                   WHERE sd.student_id = s.student_id
-               ) || ' / ' || p.total_required_documents AS docs_uploaded
+                   (
+                       SELECT COUNT(*)
+                       FROM student_documents sd
+                       WHERE sd.student_id = s.student_id
+                   ) || ' / ' || p.total_required_documents AS docs_uploaded
 
-        FROM students s
-        JOIN batches b ON s.batch_id = b.batch_id
-        JOIN programs p ON b.program_id = p.program_id
-        WHERE s.batch_id = ?
-    """;
+            FROM students s
+            JOIN batches b ON s.batch_id = b.batch_id
+            JOIN programs p ON b.program_id = p.program_id
+            WHERE s.batch_id = ?
+        """;
 
         List<StudentDTO> list = new ArrayList<>();
 
@@ -127,7 +121,6 @@ public class StudentRepository {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, batchId);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -148,7 +141,9 @@ public class StudentRepository {
         return list;
     }
 
-    //for student profile
+    // ===============================
+    // FIND BY ID
+    // ===============================
     public Student findById(int studentId) {
 
         String sql = "SELECT * FROM students WHERE student_id = ?";
@@ -160,7 +155,6 @@ public class StudentRepository {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-
                 Student s = new Student();
 
                 s.setStudentId(rs.getInt("student_id"));
@@ -193,7 +187,7 @@ public class StudentRepository {
                                 ? rs.getInt("prior_training")
                                 : null
                 );
-                s.setEnrollmentDate(rs.getString("enrollment_date"));
+                s.setEnrollmentDate(rs.getString("enrollment_timestamp"));
                 s.setBatchId(rs.getInt("batch_id"));
 
                 return s;
@@ -205,26 +199,26 @@ public class StudentRepository {
 
         return null;
     }
-    //for student profile attendance view
+
+    // ===============================
+    // ATTENDANCE %
+    // ===============================
     public double calculateAttendancePercentage(int studentId) {
 
         String sql = """
-        SELECT 
-            CASE 
-                WHEN COUNT(*) = 0 THEN 0
-                ELSE (SUM(CASE WHEN status = 'P' THEN 1 ELSE 0 END) * 100.0) / COUNT(*)
-            END AS attendance_percent
-        FROM attendance
-        WHERE student_id = ?
-    """;
+            SELECT 
+                CASE 
+                    WHEN COUNT(*) = 0 THEN 0
+                    ELSE (SUM(CASE WHEN status = 'P' THEN 1 ELSE 0 END) * 100.0) / COUNT(*)
+                END AS attendance_percent
+            FROM attendance
+            WHERE student_id = ?
+        """;
 
-        try (
-                Connection conn = SQLiteConnectionManager.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
+        try (Connection conn = SQLiteConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, studentId);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -237,17 +231,18 @@ public class StudentRepository {
 
         return 0;
     }
-    //for attendance marking
+
+    // ===============================
+    // FIND BY BATCH
+    // ===============================
     public List<Student> findByBatchId(int batchId) {
 
         String sql = "SELECT student_id, full_name FROM students WHERE batch_id = ?";
 
         List<Student> list = new ArrayList<>();
 
-        try (
-                Connection conn = SQLiteConnectionManager.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
+        try (Connection conn = SQLiteConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, batchId);
             ResultSet rs = ps.executeQuery();
@@ -265,6 +260,4 @@ public class StudentRepository {
 
         return list;
     }
-
-
 }

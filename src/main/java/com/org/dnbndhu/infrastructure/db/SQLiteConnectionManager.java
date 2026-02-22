@@ -5,23 +5,36 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class SQLiteConnectionManager {
+public final class SQLiteConnectionManager {
 
-    private static final String DB_URL =
-            "jdbc:sqlite:data/deenabandhu.db";
+    private static final String DB_URL = "jdbc:sqlite:data/deenabandhu.db";
+
+    static {
+        try {
+            // Explicit driver loading (important when packaging as .exe)
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("SQLite JDBC Driver not found.", e);
+        }
+    }
+
+    private SQLiteConnectionManager() {
+        // Prevent instantiation
+    }
 
     public static Connection getConnection() {
         try {
-            Connection conn = DriverManager.getConnection(DB_URL);
+            Connection connection = DriverManager.getConnection(DB_URL);
 
-            // IMPORTANT: Enable foreign keys per connection
-            Statement stmt = conn.createStatement();
-            stmt.execute("PRAGMA foreign_keys = ON");
+            // Enable foreign key support (must be done per connection in SQLite)
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON;");
+            }
 
-            return conn;
+            return connection;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to SQLite DB", e);
+            throw new RuntimeException("Failed to connect to SQLite database.", e);
         }
     }
 }

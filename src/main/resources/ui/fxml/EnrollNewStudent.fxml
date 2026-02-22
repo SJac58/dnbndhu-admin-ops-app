@@ -67,13 +67,10 @@
                         <TextField fx:id="ageField" promptText="Age" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
                         <!-- DOB -->
-                        <HBox fx:id="dobBox" spacing="10"
-                              GridPane.rowIndex="2"
-                              GridPane.columnSpan="3"> <!-- ADDED -->
-                            <TextField promptText="DD"/>
-                            <TextField promptText="MM"/>
-                            <TextField promptText="YYYY"/>
-                        </HBox>
+                        <DatePicker fx:id="dobPicker"
+                                    promptText="Date of Birth"
+                                    GridPane.rowIndex="2"
+                                    GridPane.columnSpan="3"/>
 
                        <!-- Gender -->
 <VBox spacing="8"
@@ -106,23 +103,61 @@
                         <VBox fx:id="remainingFieldsBox"
                               spacing="15"
                               GridPane.rowIndex="5"
-                              GridPane.columnSpan="4"> <!-- ADDED -->
+                              GridPane.columnSpan="4">
 
                             <GridPane hgap="15" vgap="15">
-                                <TextField promptText="District"/>
-                                <TextField promptText="Taluk" GridPane.columnIndex="1"/>
-                                <TextField promptText="Village" GridPane.columnIndex="2"/>
-                                <TextField promptText="PIN" GridPane.columnIndex="3"/>
 
-                                <TextField promptText="Aadhar No" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
-                                <TextField promptText="PAN Card No" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+                                <TextField fx:id="districtField"
+                                           promptText="District"/>
 
-                                <TextField promptText="Religion" GridPane.rowIndex="2"/>
-                                <TextField promptText="Caste" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-                                <TextField promptText="Sub Caste" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                                <TextField fx:id="taluqField"
+                                           promptText="Taluk"
+                                           GridPane.columnIndex="1"/>
 
-                                <TextField promptText="Email" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
-                                <TextField promptText="Cell No" GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+                                <TextField fx:id="villageField"
+                                           promptText="Village"
+                                           GridPane.columnIndex="2"/>
+
+                                <TextField fx:id="pinField"
+                                           promptText="PIN"
+                                           GridPane.columnIndex="3"/>
+
+                                <TextField fx:id="aadhaarField"
+                                           promptText="Aadhar No"
+                                           GridPane.rowIndex="1"
+                                           GridPane.columnSpan="2"/>
+
+                                <TextField fx:id="panField"
+                                           promptText="PAN Card No"
+                                           GridPane.rowIndex="1"
+                                           GridPane.columnIndex="2"
+                                           GridPane.columnSpan="2"/>
+
+                                <TextField fx:id="religionField"
+                                           promptText="Religion"
+                                           GridPane.rowIndex="2"/>
+
+                                <TextField fx:id="casteField"
+                                           promptText="Caste"
+                                           GridPane.rowIndex="2"
+                                           GridPane.columnIndex="1"/>
+
+                                <TextField fx:id="subCasteField"
+                                           promptText="Sub Caste"
+                                           GridPane.rowIndex="2"
+                                           GridPane.columnIndex="2"/>
+
+                                <TextField fx:id="emailField"
+                                           promptText="Email"
+                                           GridPane.rowIndex="3"
+                                           GridPane.columnSpan="2"/>
+
+                                <TextField fx:id="phoneField"
+                                           promptText="Cell No"
+                                           GridPane.rowIndex="3"
+                                           GridPane.columnIndex="2"
+                                           GridPane.columnSpan="2"/>
+
                             </GridPane>
                         </VBox>
                     </GridPane>

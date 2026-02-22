@@ -1,30 +1,44 @@
 package com.org.dnbndhu.service.ocr;
 
-import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
+import com.org.dnbndhu.infrastructure.ocr.Tess4JOCRClient;
 
 import java.io.File;
 
 public class OCRService {
 
-    private final ITesseract tesseract;
+    private final Tess4JOCRClient ocrClient;
 
     public OCRService() {
-
-        tesseract = new Tesseract();
-
-        tesseract.setDatapath("C:/Program Files/Tesseract-OCR/tessdata");
-        tesseract.setLanguage("eng");
+        this.ocrClient = new Tess4JOCRClient();
     }
 
-
+    /**
+     * Extract and normalize text from image file
+     */
     public String extractText(String filePath) {
 
-        try {
-            return tesseract.doOCR(new File(filePath));
-        } catch (TesseractException e) {
-            throw new RuntimeException("OCR failed", e);
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            throw new RuntimeException("OCR file not found: " + filePath);
         }
+
+        String rawText = ocrClient.extractText(file);
+
+        return normalizeText(rawText);
+    }
+
+    /**
+     * Clean OCR noise for easier parsing
+     */
+    private String normalizeText(String text) {
+
+        if (text == null) return "";
+
+        return text
+                .replaceAll("\\r", "\n")
+                .replaceAll("[|]", " ")
+                .replaceAll("[^\\x00-\\x7F]", "") // remove non-ascii
+                .trim();
     }
 }

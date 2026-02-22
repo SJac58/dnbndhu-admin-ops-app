@@ -43,7 +43,6 @@ public class ViewMyStudentsController {
         punkToggle.setToggleGroup(batchGroup);
         thaToggle.setToggleGroup(batchGroup);
 
-        // Default selection
         punkToggle.setSelected(true);
         loadPunkStudents();
 
@@ -90,7 +89,6 @@ public class ViewMyStudentsController {
         row.setHgap(20);
         setupColumns(row);
 
-        // ---- STUDENT CELL ----
         Circle avatar = new Circle(16);
         avatar.setStyle("-fx-fill: #E5E7EB;");
 
@@ -104,7 +102,6 @@ public class ViewMyStudentsController {
         VBox nameBox = new VBox(3, nameLabel, idLabel);
         HBox studentBox = new HBox(10, avatar, nameBox);
 
-        // ---- ATTENDANCE ----
         double attendancePercent = student.getAttendance();
 
         Label percent = new Label(String.format("%.0f%%", attendancePercent));
@@ -115,7 +112,6 @@ public class ViewMyStudentsController {
         HBox attendanceBox = new HBox(10, percent, bar);
         attendanceBox.setAlignment(Pos.CENTER_LEFT);
 
-        // ---- DOCUMENTS ----
         Label docsLabel = new Label(student.getDocsUploaded());
 
         Label viewFiles = new Label("View files");
@@ -141,7 +137,6 @@ public class ViewMyStudentsController {
         allStudents.clear();
 
         StudentRepository repository = new StudentRepository();
-
         List<StudentDTO> studentsFromDb = repository.findAllWithStats(1);
 
         allStudents.addAll(studentsFromDb);
@@ -154,7 +149,6 @@ public class ViewMyStudentsController {
         allStudents.clear();
 
         StudentRepository repository = new StudentRepository();
-
         List<StudentDTO> studentsFromDb = repository.findAllWithStats(2);
 
         allStudents.addAll(studentsFromDb);
@@ -172,14 +166,16 @@ public class ViewMyStudentsController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ui/fxml/studentprofile.fxml")
+                    getClass().getResource("/ui/fxml/studentProfile.fxml")
             );
 
             Parent root = loader.load();
 
             StudentProfileController controller = loader.getController();
-            controller.loadStudent(student);
-            controller.setScrollToDocuments(goToDocuments);
+
+            // FIX: Pass studentId, not DTO
+            controller.loadStudent(student.getStudentId());
+            //controller.setScrollToDocuments(goToDocuments);
 
             MainApp.setRoot(root);
 

@@ -15,7 +15,7 @@ public class AppLauncher {
 
     public static void main(String[] args) {
 
-       // SchemaInitializer.init();
+       SchemaInitializer.init();
 
         Application.launch(MainApp.class, args);
 
