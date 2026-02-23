@@ -3,6 +3,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.org.dnbndhu.ui.controller.EnrollNewStudentController"
@@ -282,8 +284,15 @@
         </columnConstraints>
 
 <TextField promptText="Project Name" GridPane.columnIndex="0"/>
-<TextField promptText="Batch No" GridPane.columnIndex="1"/>
-<TextField promptText="Batch ID" GridPane.columnIndex="2"/>
+<ComboBox fx:id="programCombo" promptText="Select Program" GridPane.columnIndex="1">
+    <items>
+        <FXCollections fx:factory="observableArrayList">
+            <String fx:value="1-PUNK"/>
+            <String fx:value="2-THA"/>
+        </FXCollections>
+    </items>
+</ComboBox>
+
     </GridPane>
 
     <!-- Row 2 -->

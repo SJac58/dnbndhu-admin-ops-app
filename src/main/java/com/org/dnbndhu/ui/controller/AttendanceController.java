@@ -22,6 +22,9 @@ public class AttendanceController {
     @FXML private VBox rowsBox;
     @FXML private Label dateLabel;
     @FXML private TextField searchField;
+    @FXML private ToggleButton punkToggle;
+    @FXML private ToggleButton thaToggle;
+    @FXML private ToggleGroup batchGroup;
 
     private final List<AttendanceDTO> attendanceList = new ArrayList<>();
 
@@ -39,7 +42,17 @@ public class AttendanceController {
                 DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
         dateLabel.setText(selectedDate.format(formatter));
 
-        loadStudents(1); // default batch
+        // Determine batch id from the toggle (PUNK -> 1, THA -> 2)
+        int initialBatch = (punkToggle != null && punkToggle.isSelected()) ? 1 : 2;
+        loadStudents(initialBatch);
+
+        // Reload students when the toggle selection changes
+        if (batchGroup != null) {
+            batchGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+                int batchId = (punkToggle != null && punkToggle.isSelected()) ? 1 : 2;
+                loadStudents(batchId);
+            });
+        }
     }
 
     private void loadStudents(int batchId) {
