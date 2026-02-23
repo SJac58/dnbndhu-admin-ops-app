@@ -10,13 +10,17 @@ import com.org.dnbndhu.ui.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EnrollNewStudentController {
 
@@ -42,6 +46,7 @@ public class EnrollNewStudentController {
     @FXML private TextField phoneField;
 
     @FXML private DatePicker applicationDatePicker;
+    @FXML private ComboBox<String> programCombo;
 
     @FXML private RadioButton maleRadio;
     @FXML private RadioButton femaleRadio;
@@ -77,10 +82,19 @@ public class EnrollNewStudentController {
         setIfPresent(disabilityPercentField, fields.get("disabilityPercentage"));
         setIfPresent(pinField, fields.get("pinCode"));
 
+        //setIfPresent(ageField, fields.get("age"));
+
         if (fields.get("dateOfBirth") != null) {
             try {
-                dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth")));
-            } catch (Exception ignored) {}
+                // OCR produces dd/MM/yyyy — try that first
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth"), fmt));
+            } catch (Exception e1) {
+                try {
+                    // Fallback: try ISO (yyyy-MM-dd)
+                    dobPicker.setValue(LocalDate.parse(fields.get("dateOfBirth")));
+                } catch (Exception ignored) {}
+            }
         }
     }
 
@@ -94,6 +108,17 @@ public class EnrollNewStudentController {
     public void initialize() {
         setupQualificationHeaders();
         setupFamilyHeaders();
+        dobPicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+
+            if (newVal != null) {
+
+                int age = java.time.Period
+                        .between(newVal, java.time.LocalDate.now())
+                        .getYears();
+
+                ageField.setText(String.valueOf(age));
+            }
+        });
     }
 
     private void setupQualificationHeaders() {
@@ -207,7 +232,24 @@ public class EnrollNewStudentController {
         else if (divorcedRadio.isSelected()) s.setMaritalStatus("Divorced");
 
         s.setEnrollmentDate(LocalDate.now().toString());
-        s.setBatchId(1);
+        // Set batch ID from selected program in the ComboBox (e.g. "1-PUNK" -> batchId = 1)
+        // Parse leading digits from programCombo value (e.g. "1-PUNK" or "1 PUNK")
+        try {
+            String prog = programCombo != null ? programCombo.getValue() : null;
+            if (prog != null && !prog.isBlank()) {
+                Pattern p = Pattern.compile("^\\s*(\\d+)");
+                Matcher m = p.matcher(prog);
+                if (m.find()) {
+                    s.setBatchId(Integer.parseInt(m.group(1)));
+                } else {
+                    s.setBatchId(1);
+                }
+            } else {
+                s.setBatchId(1);
+            }
+        } catch (Exception e) {
+            s.setBatchId(1);
+        }
 
         return s;
     }

@@ -24,7 +24,7 @@ public class OCRService {
         }
 
         String rawText = ocrClient.extractText(file);
-
+        System.out.println("Raw Text="+rawText);
         return normalizeText(rawText);
     }
 
