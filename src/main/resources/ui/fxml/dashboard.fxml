@@ -16,10 +16,10 @@
         <fx:include source="sidebar.fxml"/>
     </left>
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="content-scroll">
-            <VBox spacing="40" styleClass="content-area">
+            <VBox spacing="40">
                 <padding>
                     <Insets top="30" right="60" bottom="40" left="60"/>
                 </padding>
@@ -31,68 +31,133 @@
                     <Button text="🔔" styleClass="icon-button"/>
                 </HBox>
 
-                <!-- Hero section -->
+                <!-- Hero -->
                 <StackPane>
                     <Circle radius="100" styleClass="hero-circle"/>
                     <VBox alignment="CENTER">
-                        <Label fx:id="totalStudentsLabel" text="0" styleClass="hero-count"/>
-                        <Label text="STUDENTS ENROLLED" styleClass="hero-subtext"/>
+                        <Label fx:id="totalStudentsLabel"
+                               text="0"
+                               styleClass="hero-count"/>
+                        <Label text="STUDENTS ENROLLED"
+                               styleClass="hero-subtext"/>
                     </VBox>
                 </StackPane>
 
-                <!-- Analytics Grid -->
+                <!-- GRID -->
                 <GridPane hgap="40" vgap="60">
+
                     <columnConstraints>
                         <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                         <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                     </columnConstraints>
 
-                    <!-- Row 1 -->
-                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
-                          styleClass="card" prefWidth="420" spacing="15">
-                        <Label text="Demographics" styleClass="card-title"/>
-                        <PieChart fx:id="demographicsChart" prefHeight="200"/>
+                    <!-- ROW 1 -->
+
+                    <!-- Demographics -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="0"
+                          styleClass="card"
+                          spacing="15">
+
+                        <Label text="Demographics"
+                               styleClass="card-title"/>
+
+                        <PieChart fx:id="demographicsChart"
+                                  VBox.vgrow="ALWAYS"
+                                  prefHeight="320"/>
                     </VBox>
 
-                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
-                          styleClass="card" prefWidth="420" spacing="15">
-                        <Label text="Education Level" styleClass="card-title"/>
-                        <VBox fx:id="educationBox" spacing="15"/>
+                    <!-- Age Distribution -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="0"
+                          styleClass="card"
+                          spacing="15">
+
+                        <Label text="Age Distribution of Students"
+                               styleClass="card-title"/>
+
+                        <VBox fx:id="educationBox"
+                              VBox.vgrow="ALWAYS"/>
                     </VBox>
 
-                    <!-- Row 2 -->
-                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
-                          styleClass="card" prefWidth="420" spacing="15">
-                        <Label text="Participation" styleClass="card-title"/>
-                        <BarChart fx:id="participationChart" prefHeight="220">
-                            <xAxis><CategoryAxis/></xAxis>
-                            <yAxis><NumberAxis/></yAxis>
+                    <!-- ROW 2 -->
+
+                    <!-- Participation -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="1"
+                          styleClass="card"
+                          spacing="15">
+
+                        <Label text="Participation per Program"
+                               styleClass="card-title"/>
+
+                        <BarChart fx:id="participationChart"
+
+                                  prefHeight="320">
+
+
+                            <xAxis>
+                                <NumberAxis/>
+                            </xAxis>
+                            <yAxis>
+                                <CategoryAxis/>
+                            </yAxis>
+
                         </BarChart>
                     </VBox>
 
-                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
-                          styleClass="card" prefWidth="420" spacing="15">
-                        <Label text="Outreach" styleClass="card-title"/>
-                        <HBox spacing="25">
-                            <VBox fx:id="communityBox"/>
-                            <VBox fx:id="volunteerBox"/>
-                        </HBox>
+                    <!-- Program Comparison (Replaces Outreach) -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="1"
+                          styleClass="card"
+                          spacing="15">
+
+                        <Label text="Program Comparison Over Time"
+                               styleClass="card-title"/>
+
+                        <LineChart fx:id="programComparisonChart"
+                                   VBox.vgrow="ALWAYS"
+                                   prefHeight="320"
+                                   style="-fx-padding: 10 0 0 0;">
+
+                            <xAxis>
+                                <CategoryAxis/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis/>
+                            </yAxis>
+
+                        </LineChart>
                     </VBox>
 
-                    <!-- Row 3: Full width -->
+                    <!-- ROW 3 (FULL WIDTH) -->
+
                     <VBox GridPane.columnIndex="0"
                           GridPane.rowIndex="2"
                           GridPane.columnSpan="2"
                           styleClass="card"
-                          prefHeight="320" spacing="15">
-                        <Label text="Enrollment Trend" styleClass="card-title"/>
-                        <LineChart fx:id="enrollmentChart" prefHeight="280">
-                            <xAxis><CategoryAxis/></xAxis>
-                            <yAxis><NumberAxis/></yAxis>
+                          spacing="15">
+
+                        <Label text="Enrollment Trend"
+                               styleClass="card-title"/>
+
+                        <LineChart fx:id="enrollmentChart"
+                                   VBox.vgrow="ALWAYS"
+                                   prefHeight="420">
+
+                            <xAxis>
+                                <CategoryAxis/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis/>
+                            </yAxis>
+
                         </LineChart>
+
                     </VBox>
 
                 </GridPane>
+
             </VBox>
         </ScrollPane>
     </center>

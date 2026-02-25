@@ -3,6 +3,7 @@ package com.org.dnbndhu.ui.controller;
 import com.org.dnbndhu.domain.dto.AttendanceDTO;
 import com.org.dnbndhu.domain.model.Student;
 import com.org.dnbndhu.repository.StudentRepository;
+import com.org.dnbndhu.repository.AttendanceRepository;
 import com.org.dnbndhu.service.attendance.AttendanceService;
 
 import javafx.fxml.FXML;
@@ -30,6 +31,8 @@ public class AttendanceController {
 
     private final StudentRepository studentRepository = new StudentRepository();
     private final AttendanceService attendanceService = new AttendanceService();
+    // repository used to detect existing attendance for a date
+    private final AttendanceRepository attendanceRepository = new AttendanceRepository();
 
     private LocalDate selectedDate;
 
@@ -126,6 +129,39 @@ public class AttendanceController {
             attendanceMap.put(dto.getStudentId(), dto.isAbsent());
         }
 
+        // Check if attendance already exists for the selected date (for any student in current batch)
+        Map<Integer, String> existing = attendanceRepository.getAttendanceByDate(selectedDate.toString());
+
+        // Check if any of the students in the current batch already have attendance for this date
+        boolean anyStudentExists = false;
+        for (AttendanceDTO dto : attendanceList) {
+            if (existing.containsKey(dto.getStudentId())) {
+                anyStudentExists = true;
+                break;
+            }
+        }
+
+        if (anyStudentExists) {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Confirm Overwrite");
+            confirm.setHeaderText(null);
+            confirm.setContentText("Attendance already saved for "
+                    + selectedDate.format(fmt)
+                    + ".\nSaving again will overwrite previous attendance. Are you sure you want to continue?");
+
+            ButtonType yes = new ButtonType("Yes, Save");
+            ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+            confirm.getButtonTypes().setAll(yes, cancel);
+
+            Optional<ButtonType> result = confirm.showAndWait();
+            if (result.isEmpty() || result.get() != yes) {
+                // user cancelled - do nothing
+                return;
+            }
+        }
+
+        // proceed to save (this will overwrite existing rows because repository uses ON CONFLICT DO UPDATE)
         attendanceService.saveAttendance(attendanceMap, selectedDate);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
