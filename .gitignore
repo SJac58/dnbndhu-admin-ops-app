@@ -17,4 +17,4 @@ Thumbs.db
 *.log
 
 #gmail credentials
-src/main/resources/application.properties
+/src/main/resources/application.properties
