@@ -237,7 +237,11 @@ public class StudentRepository {
     // ===============================
     public List<Student> findByBatchId(int batchId) {
 
-        String sql = "SELECT student_id, full_name FROM students WHERE batch_id = ?";
+        String sql = """
+        SELECT student_id, full_name, email
+        FROM students
+        WHERE batch_id = ?
+    """;
 
         List<Student> list = new ArrayList<>();
 
@@ -251,6 +255,36 @@ public class StudentRepository {
                 Student s = new Student();
                 s.setStudentId(rs.getInt("student_id"));
                 s.setFullName(rs.getString("full_name"));
+                s.setEmail(rs.getString("email"));  // 🔥 IMPORTANT ADDITION
+                list.add(s);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch students", e);
+        }
+
+        return list;
+    }
+    public List<Student> findAll() {
+
+        String sql = """
+        SELECT student_id, full_name, email
+        FROM students
+        ORDER BY full_name
+    """;
+
+        List<Student> list = new ArrayList<>();
+
+        try (Connection conn = SQLiteConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Student s = new Student();
+                s.setStudentId(rs.getInt("student_id"));
+                s.setFullName(rs.getString("full_name"));
+                s.setEmail(rs.getString("email"));
                 list.add(s);
             }
 

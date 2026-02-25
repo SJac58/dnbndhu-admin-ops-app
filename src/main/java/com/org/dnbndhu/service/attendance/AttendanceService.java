@@ -39,20 +39,24 @@ public class AttendanceService {
                 int consecutiveAbsences =
                         attendanceRepository.countConsecutiveAbsences(studentId);
 
-                if (consecutiveAbsences >= 3) {
+                if (consecutiveAbsences == 3
+                        && !attendanceRepository.alreadySentToday(studentId)) {
 
                     Student student = studentRepository.findById(studentId);
 
-                    if (student != null && student.getEmail() != null) {
+                    if (student != null
+                            && student.getEmail() != null
+                            && !student.getEmail().isBlank()) {
 
                         String message = "Dear " + student.getFullName()
-                                + ", you have been absent for "
-                                + consecutiveAbsences
-                                + " consecutive days. Please contact administration.";
+                                + ",\n\nYou have been absent for 3 consecutive days."
+                                + "\nPlease contact the administration immediately."
+                                + "\n\nRegards,\nDEENABANDHU Administration";
 
                         notificationService.sendEmail(
+                                studentId,
                                 student.getEmail(),
-                                "Attendance Warning",
+                                "⚠ Attendance Warning - 3 Consecutive Absences",
                                 message
                         );
                     }
@@ -69,4 +73,5 @@ public class AttendanceService {
     public double calculateAttendancePercentage(int studentId) {
         return attendanceRepository.calculateAttendancePercentage(studentId);
     }
+
 }

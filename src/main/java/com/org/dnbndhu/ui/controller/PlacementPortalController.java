@@ -6,15 +6,19 @@ import com.org.dnbndhu.repository.PlacementRepository;
 import com.org.dnbndhu.repository.StudentRepository;
 import com.org.dnbndhu.service.notification.EmailNotificationService;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.SelectionMode;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlacementPortalController {
 
@@ -35,8 +39,10 @@ public class PlacementPortalController {
 
     private final StudentRepository studentRepository = new StudentRepository();
     private final CompanyRepository companyRepository = new CompanyRepository();
-    private final PlacementRepository placementRepository = new PlacementRepository();
     private final EmailNotificationService notificationService = new EmailNotificationService();
+    private final PlacementRepository placementRepository = new PlacementRepository();
+    // 🔥 Store student objects in memory for fast lookup
+    private final Map<String, Student> studentMap = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -47,28 +53,27 @@ public class PlacementPortalController {
         loadStudents();
         loadCompanies();
 
-        // Student search
         studentSearchField.textProperty().addListener((obs, old, val) ->
                 filteredStudents.setPredicate(s ->
                         s.toLowerCase().contains(val.toLowerCase()))
         );
 
-        // Company search
         companySearchField.textProperty().addListener((obs, old, val) ->
                 filteredCompanies.setPredicate(c ->
                         c.toLowerCase().contains(val.toLowerCase()))
         );
+        loadRecentLogs();
     }
 
-    // ================= LOAD STUDENTS =================
     private void loadStudents() {
 
-        List<Student> students = studentRepository.findByBatchId(1);
+        List<Student> students = studentRepository.findAll();
 
         allStudents = FXCollections.observableArrayList();
 
         for (Student s : students) {
             allStudents.add(s.getFullName());
+            studentMap.put(s.getFullName(), s);
         }
 
         filteredStudents = new FilteredList<>(allStudents, s -> true);
@@ -77,7 +82,6 @@ public class PlacementPortalController {
         studentCountLabel.setText(String.valueOf(allStudents.size()));
     }
 
-    // ================= LOAD COMPANIES =================
     private void loadCompanies() {
 
         List<String> companies = companyRepository.findAllNames();
@@ -88,7 +92,6 @@ public class PlacementPortalController {
         companiesList.setItems(filteredCompanies);
     }
 
-    // ================= SEND MAIL =================
     @FXML
     private void sendMail() {
 
@@ -110,54 +113,68 @@ public class PlacementPortalController {
             return;
         }
 
-        // 🔹 Send notification to each selected student
-        for (String studentName : selectedStudents) {
+        String subject = "Notification for Placement Opportunity in "
+                + String.join(", ", selectedCompanies);
 
-            Student student = findStudentByName(studentName);
+        String formattedMessage =
+                "Dear Candidate,\n\n"
+                        + "Placement Opportunity with "
+                        + String.join(", ", selectedCompanies)
+                        + "\n\n"
+                        + body
+                        + "\n\nRegards,\nDEENABANDHU Administration";
 
-            if (student != null && student.getEmail() != null) {
+        // 🔥 Background Task to avoid UI freeze
+        Task<Void> emailTask = new Task<>() {
+            @Override
+            protected Void call() {
 
-                String formattedMessage =
-                        "Placement Opportunity with "
-                                + String.join(", ", selectedCompanies)
-                                + "\n\n"
-                                + body;
+                for (String studentName : selectedStudents) {
 
-                notificationService.sendEmail(
-                        student.getEmail(),
-                        "New Placement Opportunity",
-                        formattedMessage
-                );
+                    Student student = studentMap.get(studentName);
+
+                    if (student != null
+                            && student.getEmail() != null
+                            && !student.getEmail().isBlank()) {
+
+                        notificationService.sendEmail(
+                                student.getStudentId(),
+                                student.getEmail(),
+                                subject,
+                                formattedMessage
+                        );
+                    }
+                }
+
+                return null;
             }
-        }
+        };
 
-        // 🔹 Log UI message
-        String mailLog = String.format(
-                "[%s] Sent to %d students | Companies: %s",
-                LocalDateTime.now(),
-                selectedStudents.size(),
-                String.join(", ", selectedCompanies)
-        );
+        emailTask.setOnSucceeded(e -> {
 
-        messagesList.getItems().add(0, mailLog);
-        messageField.clear();
+            String mailLog = String.format(
+                    "[%s] Sent to %d students | Companies: %s",
+                    LocalDateTime.now(),
+                    selectedStudents.size(),
+                    String.join(", ", selectedCompanies)
+            );
 
-        new Alert(Alert.AlertType.INFORMATION,
-                "Placement notifications sent successfully.")
-                .showAndWait();
+            loadRecentLogs();
+            messageField.clear();
+
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Placement notifications sent successfully.")
+                    .showAndWait();
+        });
+
+        new Thread(emailTask).start();
     }
+    private void loadRecentLogs() {
 
-    // ================= HELPER =================
-    private Student findStudentByName(String name) {
+        messagesList.getItems().clear();
 
-        List<Student> students = studentRepository.findByBatchId(1);
+        List<String> logs = placementRepository.fetchRecentPlacementLogs(5);
 
-        for (Student s : students) {
-            if (s.getFullName().equals(name)) {
-                return s;
-            }
-        }
-
-        return null;
+        messagesList.getItems().addAll(logs);
     }
 }

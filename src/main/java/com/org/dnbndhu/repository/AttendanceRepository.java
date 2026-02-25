@@ -146,4 +146,31 @@ public class AttendanceRepository {
 
         return 0;
     }
+    public boolean alreadySentToday(int studentId) {
+
+        String sql = """
+        SELECT COUNT(*)
+        FROM notifications
+        WHERE student_id = ?
+        AND DATE(sent_date) = DATE('now')
+    """;
+
+        try (
+                Connection conn = SQLiteConnectionManager.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, studentId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to check duplicate notification", e);
+        }
+
+        return false;
+    }
 }
