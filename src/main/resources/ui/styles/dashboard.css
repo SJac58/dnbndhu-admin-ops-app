@@ -111,7 +111,7 @@
    PIE CHART
 ================================================== */
 .default-color0.chart-pie {
-  -fx-pie-color: #6d28d9;
+  -fx-pie-color: #64DFDF;
 }
 .default-color1.chart-pie {
   -fx-pie-color: #7c3aed;
@@ -129,13 +129,13 @@
    BAR CHART
 ================================================== */
 .default-color0.chart-bar {
-  -fx-bar-fill: #9d174d;
+  -fx-bar-fill: #64DFDF;
 }
 .default-color1.chart-bar {
-  -fx-bar-fill: #be185d;
+  -fx-bar-fill: #C77DFF;
 }
 .default-color2.chart-bar {
-  -fx-bar-fill: #db2777;
+  -fx-bar-fill: #6A0DAD;
 }
 
 /* ==================================================
@@ -183,4 +183,25 @@
 
 .button {
   -fx-text-fill: #000000;
+}
+
+
+/* ===== PROGRAM COMPARISON (SCOPED) ===== */
+
+#programComparisonChart .default-color0.chart-series-line {
+  -fx-stroke: #7c3aed;
+  -fx-stroke-width: 3px;
+}
+
+#programComparisonChart .default-color0.chart-line-symbol {
+  -fx-background-color: #7c3aed, white;
+}
+
+#programComparisonChart .default-color1.chart-series-line {
+  -fx-stroke: #64DFDF;
+  -fx-stroke-width: 3px;
+}
+
+#programComparisonChart .default-color1.chart-line-symbol {
+  -fx-background-color: #64DFDF, white;
 }
