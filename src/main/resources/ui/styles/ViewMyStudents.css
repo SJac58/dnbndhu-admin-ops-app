@@ -53,6 +53,7 @@
 
 .progress-bar {
   -fx-pref-height: 6;
+  -fx-accent: #7C3AED !important;
 }
 
 .progress-bar .track {
@@ -64,6 +65,7 @@
 .progress-bar .bar {
   -fx-background-radius: 10;
   -fx-background-insets: 0;
+  -fx-background-color: #7C3AED !important;
 }
 
 .toggle-pill {

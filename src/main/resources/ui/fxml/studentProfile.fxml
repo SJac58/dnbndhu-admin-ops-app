@@ -14,56 +14,59 @@
 
     <center>
         <ScrollPane fx:id="profileScroll" fitToWidth="true">
-        <VBox spacing="24" styleClass="page-root">
+            <VBox spacing="24" styleClass="page-root">
                 <padding>
                     <Insets top="25" right="40" bottom="25" left="40"/>
                 </padding>
 
-                <!-- ===== HEADER ===== -->
-                <VBox spacing="6">
+                <!-- ===== STUDENT + PERSONAL DETAILS ROW ===== -->
+                <HBox spacing="30" alignment="TOP_LEFT">
 
-                    <StackPane fx:id="photoBox"
-                               prefWidth="140"
-                               prefHeight="160"
-                               styleClass="photo-box"/>
-                    <Label fx:id="nameLabel"
-                           styleClass="profile-name"/>
+                    <!-- Student Card -->
+                    <VBox spacing="14" styleClass="student-card">
+                        <StackPane fx:id="photoBox"
+                                   styleClass="photo-box"
+                                   maxWidth="-Infinity"
+                                   maxHeight="-Infinity"/>
 
-                    <Label fx:id="ageGenderLabel"
-                           styleClass="profile-sub"/>
+                        <Label fx:id="nameLabel"
+                               styleClass="profile-name"/>
 
-                    <Label fx:id="studentIdLabel"
-                           styleClass="pill"/>
+                        <HBox spacing="20" alignment="CENTER">
+                            <Label fx:id="ageGenderLabel"
+                                   styleClass="profile-sub"/>
 
-                </VBox>
+                            <Label fx:id="studentIdLabel"
+                                   styleClass="pill"/>
+                        </HBox>
+                    </VBox>
 
-                <!-- ===== PERSONAL DETAILS ===== -->
-                <VBox styleClass="card">
-                    <Label text="Personal Details" styleClass="section-title"/>
+                    <!-- Personal Details Card -->
+                    <VBox styleClass="card" prefWidth="600">
+                        <Label text="Personal Details" styleClass="section-title"/>
 
-                    <GridPane hgap="20" vgap="10">
+                        <GridPane hgap="20" vgap="10">
+                            <Label text="Date of Birth:"/>
+                            <Label fx:id="dobLabel" GridPane.columnIndex="1"/>
 
-                        <Label text="Date of Birth:"/>
-                        <Label fx:id="dobLabel" GridPane.columnIndex="1"/>
+                            <Label text="Disability:" GridPane.rowIndex="1"/>
+                            <Label fx:id="disabilityLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                        <Label text="Disability:" GridPane.rowIndex="1"/>
-                        <Label fx:id="disabilityLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label text="Marital Status:" GridPane.rowIndex="2"/>
+                            <Label fx:id="maritalStatusLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                        <Label text="Marital Status:" GridPane.rowIndex="2"/>
-                        <Label fx:id="maritalStatusLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            <Label text="Religion:" GridPane.rowIndex="3"/>
+                            <Label fx:id="religionLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                        <Label text="Religion:" GridPane.rowIndex="3"/>
-                        <Label fx:id="religionLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            <Label text="Caste:" GridPane.rowIndex="4"/>
+                            <Label fx:id="casteLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                        <Label text="Caste:" GridPane.rowIndex="4"/>
-                        <Label fx:id="casteLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                            <Label text="Sub Caste:" GridPane.rowIndex="5"/>
+                            <Label fx:id="subCasteLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                        </GridPane>
+                    </VBox>
 
-                        <Label text="Sub Caste:" GridPane.rowIndex="5"/>
-                        <Label fx:id="subCasteLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-
-                    </GridPane>
-                </VBox>
-
+                </HBox>
                 <!-- ===== CONTACT DETAILS ===== -->
                 <VBox styleClass="card">
                     <Label text="Contact Details" styleClass="section-title"/>
@@ -139,36 +142,36 @@
                 </VBox>
 
                 <!-- ===== DOCUMENTS ===== -->
-            <VBox styleClass="card">
+                <VBox styleClass="card">
 
-                <Label text="Documents" styleClass="section-title"/>
+                    <Label text="Documents" styleClass="section-title"/>
 
-                <VBox spacing="8">
-                    <Button fx:id="viewAadhaarBtn"
-                            text="View Aadhaar"/>
+                    <VBox spacing="8">
+                        <Button fx:id="viewAadhaarBtn"
+                                text="View Aadhaar"/>
 
-                    <Button fx:id="viewPanBtn"
-                            text="View PAN"/>
+                        <Button fx:id="viewPanBtn"
+                                text="View PAN"/>
 
-                    <Button fx:id="viewBankBtn"
-                            text="View Bank Passbook"/>
+                        <Button fx:id="viewBankBtn"
+                                text="View Bank Passbook"/>
 
-                    <Button fx:id="viewEducationalCertBtn"
-                            text="View Educational Certification"/>
+                        <Button fx:id="viewEducationalCertBtn"
+                                text="View Educational Certification"/>
 
-                    <Button fx:id="viewMedicalCertBtn"
-                            text="View Medical Certificate"/>
+                        <Button fx:id="viewMedicalCertBtn"
+                                text="View Medical Certificate"/>
 
-                    <Button fx:id="viewUdidBtn"
-                            text="View UDID"/>
+                        <Button fx:id="viewUdidBtn"
+                                text="View UDID"/>
 
-                    <Button fx:id="viewPhotoBtn"
-                            text="View Photo"/>
+                        <Button fx:id="viewPhotoBtn"
+                                text="View Photo"/>
 
+
+                    </VBox>
 
                 </VBox>
-
-            </VBox>
 
             </VBox>
         </ScrollPane>

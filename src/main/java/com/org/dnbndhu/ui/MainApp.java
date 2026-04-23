@@ -27,6 +27,7 @@ public class MainApp extends Application {
                 MainApp.class.getResource("/ui/styles/dashboard.css").toExternalForm(),
                 MainApp.class.getResource("/ui/styles/sidebar.css").toExternalForm(),
                 MainApp.class.getResource("/ui/styles/ViewMyStudents.css").toExternalForm(),
+                MainApp.class.getResource("/ui/styles/studentProfile.css").toExternalForm(),
                 MainApp.class.getResource("/ui/styles/attendance.css").toExternalForm(),
                 MainApp.class.getResource("/ui/styles/PlacementPortal.css").toExternalForm(),
                 MainApp.class.getResource("/ui/styles/EnrollNewStudent.css").toExternalForm()

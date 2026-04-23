@@ -7,7 +7,8 @@ import java.sql.Statement;
 
 public final class SQLiteConnectionManager {
 
-    private static final String DB_URL = "jdbc:sqlite:data/deenabandhu.db";
+    private static final String DB_URL =
+            "jdbc:sqlite:" + System.getProperty("user.dir") + "/data/deenabandhu.db";
 
     static {
         try {

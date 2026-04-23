@@ -8,7 +8,7 @@ public class EmailTest {
 
         emailService.sendEmail(
                 1,
-                "antriamartin@gmail.com",
+                "sara.jacob@btech.christuniversity.in",
                 "SMTP Test",
                 "If you got this, it works!"
         );

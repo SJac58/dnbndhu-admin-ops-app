@@ -187,16 +187,42 @@ public class ViewMyStudentsController {
     // ================= STYLE =================
     private void setAttendanceBarColor(ProgressBar bar, double percent) {
 
+        // Apply consistent purple theme color to all bars
+        String colorStyle = "-fx-accent: #7C3AED;";
+
+        bar.setStyle(colorStyle);
+
+        // Fallback: also apply to .bar pseudo-element after scene is ready
         Platform.runLater(() -> {
-
-            if (bar.lookup(".bar") == null) return;
-
-            if (percent >= 75)
-                bar.lookup(".bar").setStyle("-fx-background-color: #22c55e;");
-            else if (percent >= 50)
-                bar.lookup(".bar").setStyle("-fx-background-color: #f59e0b;");
-            else
-                bar.lookup(".bar").setStyle("-fx-background-color: #ef4444;");
+            javafx.scene.Node barNode = bar.lookup(".bar");
+            if (barNode != null) {
+                barNode.setStyle("-fx-background-color: #7C3AED;");
+            }
         });
+
+        /* OLD CODE - kept for reference
+        String colorStyle;
+        if (percent >= 75) {
+            colorStyle = "-fx-accent: #22c55e;";
+        } else if (percent >= 50) {
+            colorStyle = "-fx-accent: #f59e0b;";
+        } else {
+            colorStyle = "-fx-accent: #ef4444;";
+        }
+
+        bar.setStyle(colorStyle);
+
+        Platform.runLater(() -> {
+            javafx.scene.Node barNode = bar.lookup(".bar");
+            if (barNode != null) {
+                if (percent >= 75)
+                    barNode.setStyle("-fx-background-color: #22c55e;");
+                else if (percent >= 50)
+                    barNode.setStyle("-fx-background-color: #f59e0b;");
+                else
+                    barNode.setStyle("-fx-background-color: #ef4444;");
+            }
+        });
+        */
     }
 }
